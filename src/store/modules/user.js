@@ -7,7 +7,8 @@ const user={
     name:'',
     avatar:'',
     type:'',
-    msg:[]
+    msg:[],
+    id:10
   },
   mutations:{
     SET_TOKEN:(state, token)=>{

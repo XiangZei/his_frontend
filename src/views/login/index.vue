@@ -2,13 +2,13 @@
   <div>
     <el-card class="login-from-layout">
       <el-form ref="loginForm"
-               :model="loginForm"
-               :rules="loginRules">
+              :model="loginForm"
+              :rules="loginRules">
         <h2 class="">login</h2>
         <el-form-item>
           <el-select v-model="loginForm.type" placeholder="请选择用户登陆类别">
             <el-option
-             v-for="item in items"
+            v-for="item in items"
               :key="item.id"
               :label="item.type"
               :value="item.id">

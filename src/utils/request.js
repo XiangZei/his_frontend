@@ -14,7 +14,6 @@ const service = axios.create({
 service.interceptors.request.use(config=>{
   if(store.getters.token){
     config.headers['Authorization']=getToken() // 让每个请求携带自定义token
-    config.headers['Access-Control-Allow-Origin']='*'
   }
   return config
 }),error=>{

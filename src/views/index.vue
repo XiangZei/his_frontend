@@ -2,13 +2,13 @@
     <div>
         <el-container style="height: 745px;">
           <transition name="el-zoom-in-center" >
-            <div  >
+            <div>
               <el-aside width="200px">
                 <el-card style="border-radius: 30px;background-color: rgb(238, 241, 246)">{{usertype}}</el-card>
                 
                 <el-menu style="margin-top:30px;" default-active="1" :collapse="show" :router=true >
                   <el-submenu index="1" v-show="reg" >
-                    <template slot="title" >
+                    <template slot="title">
                       <i class="el-icon-location"></i>
                       <span>挂号收费</span>
                     </template>
@@ -35,27 +35,33 @@
 
           <el-container>
             <el-header style="text-align: right; font-size: 12px ;background-color: rgb(180, 223, 234);border-radius: 30px;">
-              <div class="header" >
-                <div  @click="show = !show" style="margin-top:7px">
-                <div class="el-icon-caret-left header" style="text-align:left"></div>
-                <div class="el-icon-caret-right header" style="text-align:left"></div>
-              </div>
-              <div style="width:520px"></div>
-              <div  style="font-size:26px;margin-top:3px; ">东软云就诊</div>
-              <div style="width:520px"></div>
-              <el-dropdown>
-                <span class="el-dropdown-link">
-                  <el-avatar  icon="el-icon-user-solid">
-                  </el-avatar>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>
-                    <div v-on:click="logout">退出</div>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-              </div>
-              
+              <el-row>
+                <el-col :span="8" :lg="8">
+                    <div  @click="show = !show" class="grid-content" style="margin-top:9px; text-align:left;">
+                      <div class="el-icon-caret-left header" style="text-align:left"></div>
+                      <div class="el-icon-caret-right header" style="text-align:left"></div>
+                    </div>
+                </el-col>
+                <el-col :span="8" :lg="8" >
+                  <div  style="font-size:26px; text-align:center;"  class="grid-content " >东软云就诊</div>
+                </el-col>
+                <el-col :span="8"  :lg="8">
+                  <div  class="grid-content" style="text-align:right;">
+                    <el-dropdown>
+                          <span class="el-dropdown-link">
+                            <el-avatar  icon="el-icon-user-solid">
+                            </el-avatar>
+                          </span>
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>
+                              <div v-on:click="logout">退出</div>
+                            </el-dropdown-item>
+                          </el-dropdown-menu>
+                    </el-dropdown>
+                  </div>
+                </el-col>
+              </el-row>
+
             </el-header>
             <el-main>
               <router-view/>
@@ -109,9 +115,15 @@ export default {
 </script>
 
 <style scoped>
-.header{
-  width: auto;
-  margin-top: 8px;
-  display: inline-flex
-}
+  .el-row {
+    margin-top: 10px;
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  
+  .grid-content {
+    border-radius: 4px;
+    min-height: 60px;
+  }
 </style>
