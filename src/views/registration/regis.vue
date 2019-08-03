@@ -1,16 +1,17 @@
 <template>
     <div>
+      <el-row style="margin-bottom: 10px;">
+        <el-col :span="4">
+          <el-button v-on:click="clearmsg">清空表单数据</el-button>
+        </el-col>
+      </el-row>
         <el-form   size="medium" ref="form" :model="form" :rules="formRules"  label-width="100px">
+
             <el-row>
-                    <el-form-item>
-                        <el-button v-on:click="test">清空表单数据</el-button>
-                    </el-form-item>
-            </el-row>
-            <el-row>
-                
+
                     <el-col :span="7">
                         <el-form-item label="病历号">
-                            <el-autocomplete   popper-class="my-autocomplete" placeholder="输入病历号查找" v-model="form.medicalNum" :fetch-suggestions="querySearch" 
+                            <el-autocomplete   popper-class="my-autocomplete" placeholder="输入病历号查找" v-model="form.medicalNum" :fetch-suggestions="querySearch"
                             @select="getPatientMsg" :disabled="canEdit">
                                 <i  class="el-icon-edit el-input__icon"
                                     slot="suffix">
@@ -39,10 +40,10 @@
                                 </el-input>
                         </el-form-item>
                     </el-col>
-                
+
             </el-row>
             <el-row>
-                
+
                     <el-col :span="7">
                         <el-form-item label="姓名" prop="name">
                             <el-input v-model="form.name" placeholder="请输入内容" style="width:219px;"></el-input>
@@ -68,10 +69,10 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                
+
             </el-row>
             <el-row>
-                
+
                     <el-col :span="7">
                         <el-form-item label="出生日期" prop="birthday">
                             <el-date-picker
@@ -101,7 +102,7 @@
                     </el-col>
             </el-row>
             <el-row>
-                
+
                     <el-col :span="7">
                         <el-form-item label="结算类别" prop="settlementType">
                             <el-select v-model="form.settlementType" placeholder="请选择结算类别">
@@ -126,10 +127,10 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                
+
             </el-row>
             <el-row>
-                
+
                     <el-col :span="7">
                         <el-form-item label="号别" prop="regType">
                             <el-select v-model="form.regType" placeholder="请选择挂号级别" @change="getDocList">
@@ -151,10 +152,10 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-            
+
             </el-row>
             <el-row>
-                
+
                     <el-col :span="7">
                         <el-form-item label="初始号额">
                             <el-input
@@ -182,10 +183,10 @@
                             </el-switch>
                         </el-form-item>
                     </el-col>
-                
+
             </el-row>
             <el-row>
-                
+
                     <el-col :span="7">
                         <el-form-item label="应收金额" prop="fee">
                             <el-input
@@ -207,12 +208,12 @@
                             <el-button type="primary" @click.native.prevent="onSubmit">立即创建</el-button>
                         </el-form-item>
                     </el-col>
-                
+
             </el-row>
-                
-            
+
+
         </el-form>
-        
+
     </div>
 </template>
 <script>
@@ -285,7 +286,7 @@ export default {
         }
     },
     /**
-     * "regType": 
+     * "regType":
      * [{"inde": 1,
         "fee": 50,
         "label": "专家号",
@@ -301,7 +302,7 @@ export default {
                             this.form.registNum =data.registNum;
                             this.form.medicalNum = data.medicalNum.toString();
                             this.form.invoiceNum = data.invoiceNum;
-                            
+
                             this.$alert(this.form.name+'\n挂号ID为：'+data.registNum+'\n发票号为：'+data.invoiceNum+'\n病历号: '+data.medicalNum,
                             '挂号成功',{
                             confirmButtonText: '确定',
@@ -315,7 +316,7 @@ export default {
                     }).catch(error=>{
                         alert(error.message)
                     })
-                } 
+                }
             })
         },
         getLeft(){
@@ -369,7 +370,7 @@ export default {
             })
             cb(results);
         },
-        test(){
+        clearmsg(){
             for(var key in this.form){
                 this.form[key]='';
             }
@@ -399,9 +400,9 @@ export default {
             this.baseData.medicalNum=data.medicalNum;
             this.baseData.chargeType=data.chargeType;
         })
-        
+
     }
-}   
+}
 </script>
 <style scoped>
 

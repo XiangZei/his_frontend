@@ -12,7 +12,7 @@ export default new Router({
     {path:'/404',component:()=>import("@/views/404")},
     {
       path: '/admain',
-      //redirect:'/main/regis',
+      // redirect:'/admain/regis',
       name: 'admain',
       meta:{requireAuth:true},
       component: () => import('@/views/index'),
@@ -46,12 +46,6 @@ export default new Router({
           name:'diagnose',
           meta:{requireAuth:true},
           component:()=>import('@/views/doctor/diagnose')
-        },
-        {
-          path:'prescription',
-          name:'prescription',
-          meta:{requireAuth:true},
-          component:()=>import('@/views/doctor/prescription')
         },
         {
           path:'medicine',

@@ -4,9 +4,9 @@ import {getToken,setToken,removeToken} from "@/utils/auth";
 const user={
   state:{
     token:getToken(),
-    name:'',
+    name:localStorage.getItem("name"),
     avatar:'',
-    type:'',
+    type:localStorage.getItem("type"),
     msg:[],
     id:10
   },
@@ -15,12 +15,14 @@ const user={
       state.token=token
     },
     SET_NAME:(state,name)=> {
+      localStorage.setItem("name",name)
       state.name = name
     },
     SET_AVATAR:(state,avatar)=>{
       state.avatar = avatar
     },
     SET_TYPE:(state,type)=>{
+      localStorage.setItem("type",type)
       state.type=type
     },
     SET_MSG:(state,msg)=>{
@@ -45,7 +47,7 @@ const user={
             const tokenStr = data.tokenHead+data.token
             setToken(tokenStr)
             commit('SET_TOKEN',tokenStr)
-            
+
             resolve()
           }).catch(error=>{
             reject(error)

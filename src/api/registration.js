@@ -28,7 +28,6 @@ export function getleft(docNum){
     })
 }
 
-//未实现
 export function regis(form){
     return request({
         url:'/registration/regis',
@@ -36,3 +35,4 @@ export function regis(form){
         data:form
     })
 }
+
