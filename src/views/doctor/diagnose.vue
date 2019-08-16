@@ -217,7 +217,7 @@ export default {
             console.log(tab, event);
         },
       refresh(){
-        this.docid=localStorage.getItem("docid")
+        this.docid=localStorage.getItem("name")
         getpatientlist(this.docid).then(response=>{
           if(response){
             this.patientlist=[];

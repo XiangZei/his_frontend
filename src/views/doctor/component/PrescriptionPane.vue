@@ -523,7 +523,7 @@
         openpre(){
           alert("开立处方")
           for(var prescrip in this.prescriptionSelection){
-            var docid = localStorage.getItem("docid");
+            var docid = localStorage.getItem("name");
             var medicalrecordid = this.patient.medicalrecordid;
             var registid = this.patient.registid;
             alert("处方开立信息：医生id="+docid+"  病历号="+medicalrecordid+"   挂号="+registid+"    处方名称="+this.prescriptionSelection[prescrip].prescriptionname)
