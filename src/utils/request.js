@@ -29,11 +29,12 @@ service.interceptors.response.use(
     状态码非200抛错
      */
     const res = response.data
+
     if(res.code!==200){
       Message({
         message:res.message,
         type:'error',
-        duration:3*1000
+        duration:1000
       })
       // 401:未登录
       if(res.code===401||res.code===403){
@@ -57,7 +58,7 @@ service.interceptors.response.use(
     Message({
       message:error.message,
       type:'error',
-      duration:3*1000
+      duration:1000
     })
     return Promise.reject(error)
   }

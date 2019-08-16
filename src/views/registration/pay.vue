@@ -1,307 +1,254 @@
 <template>
-
-  <p>
-
-    <el-input v-model="tableDataName" placeholder="请输入姓名" style="width:240px"></el-input>
-
-    <el-button type="primary" @click="doFilter">搜索</el-button>
-
-    <el-button type="primary" @click="openData">展示数据</el-button>
+  <div>
+    <el-row :gutter="20">
+      <el-col :span="4"><div class="grid-content bg-purple text">患者信息查询</div></el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col  :span="4" ><div class="grid-content ">病历号</div></el-col>
+      <el-col  :span="3"><div ><el-input v-model="medicalrecordid" placeholder="请输入内容"></el-input></div></el-col>
+      <el-col :span="3"><div><el-button type="primary" icon="el-icon-search" @click="fetchPreMsg">搜索</el-button></div></el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="4"><div class="grid-content bg-purple text">患者信息确认</div></el-col>
+    </el-row>
+    <el-row :gutter="4">
+      <el-col :span="3"><div class="grid-content ">姓名</div></el-col>
+      <el-col :span="4"><div class="iinput"><el-input v-model="patientdetail.name" placeholder="" :disabled="true"></el-input></div></el-col>
+      <el-col :span="3"><div class="grid-content">身份证号</div></el-col>
+      <el-col :span="4"><div class="iinput"><el-input v-model="patientdetail.idNumber" placeholder="" :disabled="true"></el-input></div></el-col>
+      <el-col :span="3"><div class="grid-content">家庭住址</div></el-col>
+      <el-col :span="4"><div class="iinput"><el-input v-model="patientdetail.address" placeholder="" :disabled="true"></el-input></div></el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="4"><div class="grid-content bg-purple text">患者消费信息</div></el-col>
+    </el-row>
 
     <el-table
-
-      :data="tableDataEnd"
-
+      :data="prescriptionmsg"
       border
-
+      size="mini"
+      @selection-change="handleSelectRegistmsg"
       style="width: 100%">
-
       <el-table-column
+        type="selection"
 
-        prop="date"
-
-        label="日期"
-
-        width="180">
+      >
+      </el-table-column>
+      <el-table-column
+        prop="medicalrecordid"
+        label="病历号"
+      >
 
       </el-table-column>
-
       <el-table-column
-
         prop="name"
-
         label="姓名"
-
-        width="180">
-
+      >
       </el-table-column>
-
       <el-table-column
-
-        prop="address"
-
-        label="地址">
-
+        prop="fee"
+        label="费用"
+      >
       </el-table-column>
-
+      <el-table-column
+        prop="date"
+        label="挂号日期"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="num"
+        label="数量">
+      </el-table-column>
+      <el-table-column
+        prop="createtime"
+        label="开立时间"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+      >
+      </el-table-column>
     </el-table>
+    <el-row :gutter="20">
+      <el-col :span="4"><el-button type="primary" @click="feeSettlement">费用结算</el-button></el-col>
+    </el-row>
 
-    <el-pagination
+    <el-dialog
+      title="发票信息(缴费)"
+      :visible.sync="settlementVisible">
+      <el-form ref="form" :model="form" :rules="rules">
+        <el-row :gutter="10">
+          <el-col :span="12">
+            <el-form-item prop="invoiceid" label="发票号">
+              <el-input v-model="form.invoiceid" placeholder="发票号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="medicalrecordid" label="病历号">
+              <el-input v-model="form.medicalrecordid" placeholder="病历号"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="12">
+            <el-form-item prop="name" label="患者姓名">
+              <el-input v-model="form.name" placeholder="患者姓名"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="paytype" label="支付方式">
+              <el-select v-model="form.paytype" placeholder="支付方式">
+                <el-option
+                v-for="item in paytypes"
+                :key="item.inde"
+                :label="item.label"
+                :value="item.inde"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="12">
+            <el-form-item prop="fee" label="应收金额">
+              <el-input v-model="form.fee" placeholder="应收金额"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="relpay" label="实收金额">
+              <el-input v-model="form.relpay" placeholder="实收金额" @keyup.enter.native="calculate_refee"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="12">
+            <el-form-item prop="refee" label="找零金额">
+              <el-input v-model="form.refee" placeholder="找零金额"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="settlementVisible = false">取 消</el-button>
+        <el-button type="primary" @click="settlement">收费</el-button>
+      </span>
+    </el-dialog>
 
-      @size-change="handleSizeChange"
-
-      @current-change="handleCurrentChange"
-
-      :current-page="currentPage"
-
-      :page-sizes="[1, 2, 3, 4]"
-
-      :page-size="pageSize"
-
-      layout="total, sizes, prev, pager, next, jumper"
-
-      :total="totalItems">
-
-    </el-pagination>
-
-  </p>
-
+  </div>
 </template>
 
 <script>
-
+import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg,settlement_1,} from "@/api/registration"
   export default {
 
     data() {
-
       return {
-
-        tableDataBegin: [
-
-          {
-
-            date: "2016-05-01",
-
-            name: "王小虎",
-
-            address: "上海市普陀区金沙江路 1518 弄"
-
-          },
-
-          {
-
-            date: "2016-05-02",
-
-            name: "王小虎",
-
-            address: "上海市普陀区金沙江路 1517 弄"
-
-          },
-
-          {
-
-            date: "2016-05-03",
-
-            name: "王二虎",
-
-            address: "上海市普陀区金沙江路 1519 弄"
-
-          },
-
-          {
-
-            date: "2016-05-04",
-
-            name: "王二虎",
-
-            address: "上海市普陀区金沙江路 1516 弄"
-
-          },
-
-          {
-
-            date: "2016-05-05",
-
-            name: "王三虎",
-
-            address: "上海市普陀区金沙江路 1518 弄"
-
-          },
-
-          {
-
-            date: "2016-05-06",
-
-            name: "王三虎",
-
-            address: "上海市普陀区金沙江路 1517 弄"
-
-          },
-
-          {
-
-            date: "2016-05-07",
-
-            name: "王小虎",
-
-            address: "上海市普陀区金沙江路 1519 弄"
-
-          },
-
-          {
-
-            date: "2016-05-08",
-
-            name: "王小虎",
-
-            address: "上海市普陀区金沙江路 1516 弄"
-
+        medicalrecordid:"",
+        registSelection: [],
+        fee:"",
+        settlementVisible:false,
+        patientdetail:{},
+        prescriptionmsg:[],
+        form:{
+          invoiceid:"",
+          medicalrecordid:"",
+          name:"",
+          paytype:"",
+          fee:"",
+          relpay:"",
+          refee:""
+        },
+        rules:{
+          invoiceid:[{required:true,trigger:'blur'}],
+          medicalrecordid:[{required:true,trigger:'blur'}],
+          name:[{required:true,trigger:'blur'}],
+          paytype:[{required:true,trigger:'blur'}],
+          fee:[{required:true,trigger:'blur'}],
+          relpay:[{required:true,trigger:'blur'}],
+          refee:[{required:true,trigger:'blur'}]
+        },
+        paytypes:[]
+      }
+    },
+    methods: {
+      //获取病人信息
+      fetchPreMsg(){
+        getpatientmsg(this.medicalrecordid).then(response=>{
+          this.patientdetail = response.data;
+          console.log("成功获取病人信息")
+        }).catch(error=>{
+          console.log("病人信息获取失败")
+        });
+        getPreMsg(this.medicalrecordid).then(response=>{
+          this.prescriptionmsg  = response.data;
+          for(var a in this.prescriptionmsg){
+            this.prescriptionmsg[a].name=this.patientdetail.name;
           }
+          alert(this.prescriptionmsg)
+          console.log("成功获取病人处方信息")
+        }).catch(error=>{
+          console.log("病人处方信息获取失败")
+        })
+      },
+      settlement(){
+        this.$refs.form.validate(validate=>{
+          if(validate){
+            var docid=localStorage.getItem("name");
+            if(this.form.relpay<this.form.fee){
+              this.$message.error("无法结算，金额错误")
+            }else{
+              for(var a in this.registSelection){
+                var registid = this.registSelection[a].registid;
 
-        ],
+                // alert(registid+"   "+medicalrecordid+"   "+docid+"   "+this.form.paytype+"   "+this.form.invoiceid);
+                settlement_1(registid,docid,this.form,this.registSelection[a]).then(response=>{
+                  console.log("结算完毕")
+                }).catch(error=>{
+                  console.log("结算错误")
+                })
+              }
+              startinvoice(this.form,docid).then(response=>{
+                console.log("发票结算成功")
+              }).catch(error=>{
+                console.log("发票结算错误")
+              })
+              this.settlementVisible = false;
+            }
+          }
+        })
+      },
+      calculate_refee(){
+        this.form.refee = this.form.relpay-this.form.fee;
+      },
+      handleSelectRegistmsg(val){
+        this.registSelection = val;
+      },
+      feeSettlement(){
 
-        tableDataName: "",
-
-        tableDataEnd: [],
-
-        currentPage: 4,
-
-        pageSize: 2,
-
-        totalItems: 0,
-
-        filterTableDataEnd:[],
-
-        flag:false
-
-      };
-
+        if(this.registSelection.length===0){
+          this.$message({
+            message:"请先选择挂号信息",
+            type:'warning'
+          });
+        }else{
+          this.form.fee = 0;
+          for(var a in this.registSelection){
+            this.form.fee+=this.registSelection[a].num*this.registSelection[a].fee
+          }
+          this.form.medicalrecordid =this.registSelection[0].medicalrecordid;
+          this.form.name=this.registSelection[0].name;
+          this.settlementVisible=true;
+        }
+      }
     },
 
     created() {
-
-      this.totalItems = this.tableDataBegin.length;
-
-      if (this.totalItems > this.pageSize) {
-
-        for (let index = 0; index < this.pageSize; index++) {
-
-          this.tableDataEnd.push(this.tableDataBegin[index]);
-
-        }
-
-      } else {
-
-        this.tableDataEnd = this.tableDataBegin;
-
-      }
-
-    },
-
-    methods: {
-
-      //前端搜索功能需要区分是否检索,因为对应的字段的索引不同
-
-      //用两个变量接收currentChangePage函数的参数
-
-      doFilter() {
-
-        if (this.tableDataName == "") {
-
-          this.$message.warning("查询条件不能为空！");
-
-          return;
-
-        }
-
-        this.tableDataEnd = []
-
-        //每次手动将数据置空,因为会出现多次点击搜索情况
-
-        this.filterTableDataEnd=[]
-
-        this.tableDataBegin.forEach((value, index) => {
-
-          if(value.name){
-
-            if(value.name.indexOf(this.tableDataName)>=0){
-
-              this.filterTableDataEnd.push(value)
-
-            }
-
-          }
-
-        });
-
-        //页面数据改变重新统计数据数量和当前页
-
-        this.currentPage=1
-
-        this.totalItems=this.filterTableDataEnd.length
-
-        //渲染表格,根据值
-
-        this.currentChangePage(this.filterTableDataEnd)
-
-        //页面初始化数据需要判断是否检索过
-
-        this.flag=true
-
-      },
-
-      openData() {},
-
-      handleSizeChange(val) {
-
-        console.log(`每页 ${val} 条`);
-
-        this.pageSize = val;
-
-        this.handleCurrentChange(this.currentPage);
-
-      },
-
-      handleCurrentChange(val) {
-
-        console.log(`当前页: ${val}`);
-
-        this.currentPage = val;
-
-        //需要判断是否检索
-
-        if(!this.flag){
-
-          this.currentChangePage(this.tableDataEnd)
-
-        }else{
-
-          this.currentChangePage(this.filterTableDataEnd)
-
-        }
-
-      }, //组件自带监控当前页码
-
-      currentChangePage(list) {
-
-        let from = (this.currentPage - 1) * this.pageSize;
-
-        let to = this.currentPage * this.pageSize;
-
-        this.tableDataEnd = [];
-
-        for (; from < to; from++) {
-
-          if (list[from]) {
-
-            this.tableDataEnd.push(list[from]);
-
-          }
-
-        }
-
-      }
-
+      getPayType().then(response=>{
+        this.paytypes=response.data;
+        console.log("成功获取支付方式")
+      }).catch(error=>{
+        console.log("支付方式获取失败")
+      })
     }
 
   };

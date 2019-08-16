@@ -521,6 +521,7 @@
           }
         },
         openpre(){
+          alert("开立处方")
           for(var prescrip in this.prescriptionSelection){
             var docid = localStorage.getItem("docid");
             var medicalrecordid = this.patient.medicalrecordid;

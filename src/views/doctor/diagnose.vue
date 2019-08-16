@@ -134,7 +134,7 @@ export default {
             //   "medicalrecordid": 600615,
             //   "name": "陶渊明",
             //   "diagnosestate": 2,
-            //   "registid": 75,
+            //   "registid": 75,  
             //   "age": 33
             // },
             // {

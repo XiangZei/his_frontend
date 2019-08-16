@@ -8,7 +8,6 @@
         <el-form   size="medium" ref="form" :model="form" :rules="formRules"  label-width="100px">
 
             <el-row>
-
                     <el-col :span="7">
                         <el-form-item label="病历号">
                             <el-autocomplete   popper-class="my-autocomplete" placeholder="输入病历号查找" v-model="form.medicalNum" :fetch-suggestions="querySearch"
@@ -40,7 +39,6 @@
                                 </el-input>
                         </el-form-item>
                     </el-col>
-
             </el-row>
             <el-row>
 
