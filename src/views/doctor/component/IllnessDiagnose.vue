@@ -175,7 +175,6 @@
       },
       methods:{
         addill(index,row){
-          alert(row.illname)
           this.diagnoseill.push({
             illname:row.illname,
             icdcode:row.icdcode,
@@ -183,6 +182,11 @@
             illcode:row.illcode,
             diagnosetype:this.diagnosetype
           });
+          this.$message({
+            message:'成功增添疾病：'+row.illname,
+            type:'success',
+            duration:900
+          })
         },
         delill(){
 
@@ -197,12 +201,12 @@
           }
         },
         searchIll(val){
-          alert(val)
           searchill(val).then(response=>{
             this.illList = response.data;
             this.$message({
               message:"疾病信息拉取成功",
-              type:'success'
+              type:'success',
+              duration:500
             })
           }).catch(error=>{
             console.log(error.message);

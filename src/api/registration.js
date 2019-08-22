@@ -131,3 +131,19 @@ export function startinvoice(form,personid){
     }
   })
 }
+
+export function distributemedicine(registid,docid,form,row){
+  return request({
+    url:'/registration/distributemedicine',
+    method:'POST',
+    data:{
+      "pdi":row.pdi
+    }
+  })
+}
+export function getPreMsg_medicine(medicalrecordid){
+  return request({
+    url:'/registration/getPreMsgMedicine?medicalrecordid='+medicalrecordid,
+    method:'GET'
+  })
+}

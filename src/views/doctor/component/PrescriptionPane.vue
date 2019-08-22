@@ -10,7 +10,7 @@
       <el-col :span="2"><div class="grid-content bg-purple"><el-link @click="deletepre">删方</el-link></div></el-col>
       <el-col :span="2"><div class="grid-content bg-purple-light"><el-link @click="openpre" :disabled="show">开立</el-link></div></el-col>
       <el-col :span="2"><div class="grid-content bg-purple"><el-link @click="cancel">作废</el-link></div></el-col>
-      <el-col :span="2"><div class="grid-content bg-purple-light"><el-link>刷新</el-link></div></el-col>
+      <el-col :span="2"><div class="grid-content bg-purple-light"><el-link @click="refresh">刷新</el-link></div></el-col>
       <el-col :span="7"><div class="grid-content bg-purple" style="text-align: right"  ><el-link @click="beforeadddrug" :disabled="show">增药</el-link></div></el-col>
       <el-col :span="3"><div class="grid-content bg-purple-light"style="text-align: left;padding-left: 30px;"><el-link @click="deletedrug" :disabled="show">删药</el-link></div></el-col>
 
@@ -521,52 +521,58 @@
           }
         },
         openpre(){
-          alert("开立处方")
-          for(var prescrip in this.prescriptionSelection){
-            var docid = localStorage.getItem("name");
-            var medicalrecordid = this.patient.medicalrecordid;
-            var registid = this.patient.registid;
-            alert("处方开立信息：医生id="+docid+"  病历号="+medicalrecordid+"   挂号="+registid+"    处方名称="+this.prescriptionSelection[prescrip].prescriptionname)
-            openpre(medicalrecordid,registid,docid,this.prescriptionSelection[prescrip].prescriptionname).then(response=>{
-              var data = response.data;
-              var id = data.id;
-              this.$message({
-                message:"成功添加处方",
-                type:"success"
-              })
-              var druglist = this.prescriptiondetaillist.filter(data=>{
-                return data.prescriptionname === this.prescriptionSelection[prescrip].prescriptionname
-              })
-              var er = true;
-              for(var drug in druglist){
-                filldetail(id,druglist[drug]).then(response=>{
+          
+          
+        var docid = localStorage.getItem("name");
+        var medicalrecordid = this.patient.medicalrecordid;
+        var registid = this.patient.registid;
+        if(medicalrecordid==""||registid==""){
+          this.$message.error({message:"请先选择病人",duration:1000})
+        }else{
+              for(var prescrip in this.prescriptionSelection){
+                openpre(medicalrecordid,registid,docid,this.prescriptionSelection[prescrip].prescriptionname).then(response=>{
+                  var data = response.data;
+                  var id = data.id;
                   this.$message({
-                    message:"成功添加药品明细",
-                    type:"success"
+                    message:"成功添加处方",
+                    type:"success",
+                        duration:500
                   })
-                }).catch(error=>{
-                  er = false;
-                  alert("error")
-                })
-              }
-              if(er){
-                this.prescriptionSelection[prescrip].status = "已开立";
-                this.show=true;
-              }
+                  var druglist = this.prescriptiondetaillist.filter(data=>{
+                    return data.prescriptionname === this.prescriptionSelection[prescrip].prescriptionname
+                  })
+                  var er = true;
+                  for(var drug in druglist){
+                    filldetail(id,druglist[drug]).then(response=>{
+                      this.$message({
+                        message:"成功添加药品明细",
+                        type:"success",
+                        duration:500
+                      })
+                    }).catch(error=>{
+                      er = false;
+                      alert("error")
+                    })
+                  }
+                  if(er){
+                    this.prescriptionSelection[prescrip].status = "已开立";
+                    this.show=true;
+                  }
             }).catch(error=>{
               this.$message.error("处方添加错误")
             })
-
-
-
-
-          }
+            }
+        }
+          
         },
         handleSelectPrescription(val){
           this.prescriptionSelection=val;
         },
         handledrug(val){
           this.drugSelection = val;
+        },
+        refresh(){
+          this.prescriptionlist=[]
         }
       },
       computed:{

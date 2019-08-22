@@ -99,16 +99,24 @@ export default {
       })
     },
     withdraw_regis(row) {
-      withdrawRegis(row.registid).then(response=>{
-        row.diagnosestate = "已退号";
-        console.log("病人已退号")
-        this.$message({
-          message:"病人成功退号",
-          type:'success'
-        })
-      }).catch(error=>{
-        console.log("退号失败")
-      })
+      this.$confirm("是否进行退号操作？","提示",{
+        confirmButtonText:"确认",
+        cancelButtonText:"取消",
+        type:"warning"
+      }).then(()=>{
+          withdrawRegis(row.registid).then(response=>{
+            row.diagnosestate = "已退号";
+            console.log("病人已退号")
+            this.$message({
+              message:"病人成功退号",
+              type:'success'
+            })
+          }).catch(error=>{
+            console.log("退号失败")
+          });
+      }).catch(()=>{
+        console.log("cancel")
+      });
     }
   },
 
@@ -125,7 +133,9 @@ export default {
 </script>
 
 <style scoped>
-
+.el-col{
+  margin-top: 10px;
+}
 .bg-purple {
     background: #aee6de;
 }

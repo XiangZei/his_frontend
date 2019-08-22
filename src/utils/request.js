@@ -12,15 +12,16 @@ const service = axios.create({
 
 //request拦截器
 service.interceptors.request.use(config=>{
-  if(store.getters.token){
-    config.headers['Authorization']=getToken() // 让每个请求携带自定义token
+    if(store.getters.token){
+      config.headers['Authorization']=getToken() // 让每个请求携带自定义token
+    }
+    return config
+  },error=>{
+    alert("请求出错误")
+    console.log(error)
+    Promise.reject(error)
   }
-  return config
-}),error=>{
-  alert("请求出错误")
-  console.log(error)
-  Promise.reject(error)
-}
+)
 
 //response拦截器
 service.interceptors.response.use(

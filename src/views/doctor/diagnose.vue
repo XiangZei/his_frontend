@@ -15,7 +15,8 @@
         <el-main style="margin-top:-20px;">
             <el-row :gutter="20">
                 <el-col :span="4"><div class="grid-content bg-purple">患者信息</div></el-col>
-                <el-col :span="20"><div class="grid-content bg-purple"><i class="el-icon-user">患者姓名：</i>{{patient.name}} <i class="el-icon-star-off">病历号：</i>{{patient.medicalrecordid}} <i class="el-icon-goods"></i>年龄：{{patient.age}} <i class="el-icon-zoom-in"></i>性别：{{patient.gender}}</div></el-col>
+                <el-col :span="16"><div class="grid-content bg-purple"><i class="el-icon-user">患者姓名：</i>{{patient.name}} <i class="el-icon-star-off">病历号：</i>{{patient.medicalrecordid}} <i class="el-icon-goods"></i>年龄：{{patient.age}} <i class="el-icon-zoom-in"></i>性别：{{patient.gender}}</div></el-col>
+                <el-col :span="4"><div class="grid-content bg-purple"><el-link @click="finishDiagnose">诊毕</el-link></div></el-col>
             </el-row>
             <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="病历首页" name="first">
@@ -34,7 +35,7 @@
 import MedicalMainPage from './component/MedicalMainPage'
 import PatientList from './component/PatientList'
 import PrescriptionPane from './component/PrescriptionPane'
-import {getpatientlist} from '@/api/diagnose'
+import {getpatientlist,finishdiagnose} from '@/api/diagnose'
 export default {
     components:{MedicalMainPage,PatientList,PrescriptionPane},
     data() {
@@ -213,6 +214,18 @@ export default {
           }
     },
     methods: {
+      finishDiagnose(){
+        finishdiagnose(this.patient.registid).then(response=>{
+          this.$message({
+            message:"病人诊毕",
+            type:"success",
+            duration:1000,
+            showClose:true
+          })
+        }).catch(error=>{
+          console.log(error.message)
+        })
+      },
         handleClick(tab, event) {
             console.log(tab, event);
         },

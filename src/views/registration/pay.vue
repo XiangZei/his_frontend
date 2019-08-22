@@ -59,19 +59,27 @@
         prop="num"
         label="数量">
       </el-table-column>
+      <el-table-column 
+      prop="proname"
+      label="名称">
+
+      </el-table-column>
       <el-table-column
         prop="createtime"
         label="开立时间"
       >
       </el-table-column>
       <el-table-column
+      prop="drugname"
+      label="药品名称"></el-table-column>
+      <el-table-column
         prop="status"
         label="状态"
       >
       </el-table-column>
     </el-table>
-    <el-row :gutter="20">
-      <el-col :span="4"><el-button type="primary" @click="feeSettlement">费用结算</el-button></el-col>
+    <el-row >
+      <el-col :span="4" style="text-align:left"><el-button type="primary" @click="feeSettlement">费用结算</el-button></el-col>
     </el-row>
 
     <el-dialog
@@ -184,7 +192,6 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
           for(var a in this.prescriptionmsg){
             this.prescriptionmsg[a].name=this.patientdetail.name;
           }
-          alert(this.prescriptionmsg)
           console.log("成功获取病人处方信息")
         }).catch(error=>{
           console.log("病人处方信息获取失败")
@@ -194,14 +201,20 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
         this.$refs.form.validate(validate=>{
           if(validate){
             var docid=localStorage.getItem("name");
+            if(docid==null){
+              this.message.error("医生信息有误，请重新登录")
+              return
+            }
             if(this.form.relpay<this.form.fee){
               this.$message.error("无法结算，金额错误")
+              return
             }else{
               for(var a in this.registSelection){
                 var registid = this.registSelection[a].registid;
 
                 // alert(registid+"   "+medicalrecordid+"   "+docid+"   "+this.form.paytype+"   "+this.form.invoiceid);
                 settlement_1(registid,docid,this.form,this.registSelection[a]).then(response=>{
+                  
                   console.log("结算完毕")
                 }).catch(error=>{
                   console.log("结算错误")
@@ -227,7 +240,7 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
 
         if(this.registSelection.length===0){
           this.$message({
-            message:"请先选择挂号信息",
+            message:"请先选中要缴费的项目",
             type:'warning'
           });
         }else{
@@ -254,3 +267,26 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
   };
 
 </script>
+<style scoped>
+.el-col{
+  margin-top: 10px;
+}
+.bg-purple {
+    background: #aee6de;
+}
+.bg-purple-light {
+    background: #e5e9f2;
+}
+.grid-content {
+    border-radius: 4px;
+    min-height: 20px;
+    padding-top: 3px;
+  margin-top: 9px;
+}
+  .text-left{
+    text-align: left;
+  }
+  .iinput{
+    margin-top: 3px;
+  }
+</style>

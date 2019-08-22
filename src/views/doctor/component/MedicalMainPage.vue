@@ -4,7 +4,7 @@
       <el-col :span="6"><div class="grid-content bg-purple"><el-link icon="el-icon-s-order" @click="temporarysto">暂存</el-link></div></el-col>
       <el-col :span="6"><div class="grid-content bg-purple"><el-link icon="el-icon-success" @click="submit">提交</el-link></div></el-col>
       <el-col :span="6"><div class="grid-content bg-purple"><el-link icon="el-icon-delete" @click="refreshMsg">清空所有</el-link></div></el-col>
-      <el-col :span="6"><div class="grid-content bg-purple"><el-link icon="el-icon-circle-plus" >刷新</el-link></div></el-col>
+      <el-col :span="6"><div class="grid-content bg-purple"><el-link icon="el-icon-circle-plus" @click="refreshMsg" >刷新</el-link></div></el-col>
     </el-row>
     <el-row :gutter="20" style="margin-top: 5px;width: 30%;">
       <el-col :span="10"><div class="grid-content bg-purple">病史信息</div></el-col>
@@ -122,7 +122,7 @@
 
 <script>
   import IllnessDiagnose from './IllnessDiagnose'
-  import {submitmedicalmainpage,changestatus,addFirstDiagnose} from "@/api/diagnose"
+  import {submitmedicalmainpage,changestatus,addFirstDiagnose,coverMedicalMainPage} from "@/api/diagnose"
     export default {
         name: "MedicalMainPage",
       components:{
@@ -133,14 +133,14 @@
             medicalmainpage:{
               registid:"",
               medicalrecordid:"",
-              chiefcomplaint:"",
-              histofpresill:"",
-              treatofpresill:"",
-              pasthist:"",
-              allergichist:"",
-              physicalexamination:"",
-              attention:"",
-              examsuggestion:""
+              chiefcomplaint:"无",
+              histofpresill:"无",
+              treatofpresill:"无",
+              pasthist:"无",
+              allergichist:"无",
+              physicalexamination:"无",
+              attention:"无",
+              examsuggestion:"无"
             },
             //用来进行分类
             illlist:[],
@@ -183,7 +183,12 @@
         },
       methods:{
           temporarysto(){
-            alert("暂存按钮被点击")
+            this.$message({
+              message:'该功能尚未实现',
+              type:'success',
+              showClose:true,
+              duration:1000
+            })
             /*
             将数据保存到数据库，每次在选到这个病人的时候自动显示上次暂存的内容。
             1，在双击病人表单的时候向后端发送请求，接受完之后传到这个组件。
@@ -200,53 +205,94 @@
             }else{
               this.medicalmainpage.registid= this.patient.registid;
               this.medicalmainpage.medicalrecordid=this.patient.medicalrecordid;
-              alert(this.medicalmainpage.registid+"  "+this.medicalmainpage.medicalrecordid)
-              //修改挂号信息上的诊断状态为已诊断
-              changestatus(this.medicalmainpage.registid).then(response=>{
-                this.$message({
-                  message: '就诊信息已经修改',
-                  type: 'success'
-                });
-              }).catch(error=>{
-                this.$message({
-                  message:'就诊信息修改失败',
-                  type:'failed'
-                })
-              })
-              submitmedicalmainpage(this.medicalmainpage).then(response=>{
-                  if(response){
-                    //提交初诊信息
-                    for(var a in this.diagnoseill){
-                      addFirstDiagnose(this.diagnoseill[a],this.patient.medicalrecordid,this.patient.registid).then(response=>{
-                        console.log("初诊信息提交成功")
-                      }).catch(error=>{
-                        console.log("初诊信息提交失败")
+                this.$confirm("是否提交病历？","提示",{
+                  confirmButtonText:"确认",
+                  cancelButtonText:"取消",
+                  type:"warning"
+                }).then(()=>{
+                    //检查病历填写情况
+                        //修改挂号信息上的诊断状态为已诊断
+                    changestatus(this.medicalmainpage.registid).then(response=>{
+                      this.$message({
+                        message: '就诊信息已经修改',
+                        type: 'success',
+                        duration:1000
+                      });
+                    }).catch(error=>{
+                      return 
+                      this.$message({
+                        message:'就诊信息修改失败',
+                        type:'failed',
+                        duration:1000
                       })
-                    }
+                    })
+                    submitmedicalmainpage(this.medicalmainpage).then(response=>{
+                        if(response.data==1){
+                          //提交初诊信息
+                          for(var a in this.diagnoseill){
+                            addFirstDiagnose(this.diagnoseill[a],this.patient.medicalrecordid,this.patient.registid).then(response=>{
+                              console.log("初诊信息提交成功")
+                            }).catch(error=>{
+                              console.log("初诊信息提交失败")
+                            })
+                          }
 
-                    this.patient.medicalrecordid="";
-                    this.patient.registid="";
-                    this.patient.name="";
-                    this.patient.gender="";
-                    this.patient.age="";
-                    this.$message({
-                      message: '病历提交成功',
-                      type: 'success'
-                    });
-                  }
-              }).catch(error=>{
-                this.$message({
-                  message: '病历提交失败',
-                  type: 'failed'
-                });
-              })
+                          this.patient.medicalrecordid="";
+                          this.patient.registid="";
+                          this.patient.name="";
+                          this.patient.gender="";
+                          this.patient.age="";
+                          this.$message({
+                            message: '病历提交成功',
+                            type: 'success'
+                          });
+                        }else if(response.data==2){
+                            this.$confirm("病历信息存在，是否要进行覆盖?","提示",{
+                            confirmButtonText:"确认",
+                            cancelButtonText:"取消",
+                            type:"warning"
+                          }).then(()=>{
+                            coverMedicalMainPage(this.medicalmainpage).then(response=>{
+                              //提交初诊信息
+                              for(var a in this.diagnoseill){
+                                addFirstDiagnose(this.diagnoseill[a],this.patient.medicalrecordid,this.patient.registid).then(response=>{
+                                  console.log("初诊信息提交成功")
+                                }).catch(error=>{
+                                  console.log("初诊信息提交失败")
+                                })
+                              }
 
+                              this.patient.medicalrecordid="";
+                              this.patient.registid="";
+                              this.patient.name="";
+                              this.patient.gender="";
+                              this.patient.age="";
+                              this.$message({
+                                message: '病历提交成功',
+                                type: 'success',
+                                duration:1000
+                              });
+                            }).catch(error=>{
+                              this.$message({
+                                message: '病历提交失败',
+                                type: 'error',
+                                duration:1000
+                              });
+                            })
+                          })
+                        }
+                    }).catch(error=>{
+                      console.log("请求失败")
+                    })
+                }).catch(error=>{
+                  console.log("请求错误")
+                })
             }
           },
         refreshMsg(){
             for(var key in this.patient){
               this.patient[key]="";
-          }
+            }
         }
       }
     }

@@ -151,10 +151,10 @@
       },
       computed:{
         tableData1:function () {
-          return this.patientlist.filter(data =>( !this.search1 || data.name.toLowerCase().includes(this.search1.toLowerCase()))&&data.diagnosestate==1)
+          return this.patientlist.filter(data =>( !this.search1 || data.name.toLowerCase().includes(this.search1.toLowerCase()))&&(data.diagnosestate==1||data.diagnosestate==2))
         },
         tableData2:function () {
-          return this.patientlist.filter(data => (!this.search2 || data.name.toLowerCase().includes(this.search2.toLowerCase()))&&data.diagnosestate==2)
+          return this.patientlist.filter(data => (!this.search2 || data.name.toLowerCase().includes(this.search2.toLowerCase()))&&data.diagnosestate==4)
         },
         total2:function(){
           if(this.tableData2.length<=this.pageSize2){
@@ -237,7 +237,10 @@
           this.patient.diagnosestate=row.diagnosestate;
           this.patient.registid=row.registid;
           this.patient.age=row.age;
-          this.$message('开始诊断'+row.name);
+          this.$message({
+            message:'开始诊断'+row.name,
+            duration:500
+          });
         },
 
         showDetail(index, row) {

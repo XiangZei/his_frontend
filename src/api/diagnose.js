@@ -132,3 +132,21 @@ export  function getdiagnose(medicalrecordid,registid){
     }
   })
 }
+
+export function finishdiagnose(registid){
+  return request({
+    url:"/diagnose/finishdiagnose",
+    method:"POST",
+    data:{
+      registid
+    }
+  })
+}
+
+export function coverMedicalMainPage(medicalmainpage){
+  return request({
+    url:'/diagnose/coverMedicalMainPage',
+    method: 'POST',
+    data:medicalmainpage
+  })
+}
