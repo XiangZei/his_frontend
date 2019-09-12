@@ -62,7 +62,7 @@
               </el-row>
 
             </el-header>
-            <el-main style="padding: 3px 10px;">
+            <el-main style="padding: 3px 10px;border-radius: 15px;" class="fulbg" >
               <router-view/>
             </el-main>
           </el-container>
@@ -134,6 +134,11 @@ export default {
     border-radius: 4px;
 
   }
+  .fulbg{
+  margin-top:0;
+  background: url(../assets/bg2.jpg);
+  
+}
 
 
 </style>

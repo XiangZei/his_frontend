@@ -22,11 +22,10 @@
                 <el-tab-pane label="病历首页" name="first">
                   <medical-main-page :patient="this.patient" :cansee3="this.patient.medicalrecordid===''"></medical-main-page>
                 </el-tab-pane>
-                <el-tab-pane label="检查申请" name="second">检查申请</el-tab-pane>
                 <el-tab-pane label="成药处方" name="third">
                   <prescription-pane :patient="this.patient"></prescription-pane>
                 </el-tab-pane>
-                <el-tab-pane label="定时任务补偿" name="fourth">..</el-tab-pane>
+                <el-tab-pane label="检查申请" name="second">检查申请</el-tab-pane>
             </el-tabs>
         </el-main>
     </el-container>
@@ -51,12 +50,6 @@ export default {
             registid:"",
             age:"",
           },
-          // "gender": "男",
-          // "medicalrecordid": 600600,
-          // "name": "张伟",
-          // "diagnosestate": 2,
-          // "registid": 60,
-          // "age": 18
           patientlist:[
             // {
             //   "gender": "男",
@@ -65,150 +58,6 @@ export default {
             //   "diagnosestate": 2,
             //   "registid": 60,
             //   "age": 18
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600601,
-            //   "name": "赵建东",
-            //   "diagnosestate": 1,
-            //   "registid": 61,
-            //   "age": 17
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600602,
-            //   "name": "王健林",
-            //   "diagnosestate": 1,
-            //   "registid": 62,
-            //   "age": 11
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600603,
-            //   "name": "杜克拉",
-            //   "diagnosestate": 2,
-            //   "registid": 63,
-            //   "age": 11
-            // },
-            // {
-            //   "gender": "女",
-            //   "medicalrecordid": 600604,
-            //   "name": "张子",
-            //   "diagnosestate": 1,
-            //   "registid": 64,
-            //   "age": 56
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600605,
-            //   "name": "赵杰",
-            //   "diagnosestate": 1,
-            //   "registid": 65,
-            //   "age": 67
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600606,
-            //   "name": "李沐",
-            //   "diagnosestate": 2,
-            //   "registid": 66,
-            //   "age": 33
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600607,
-            //   "name": "张军",
-            //   "diagnosestate": 2,
-            //   "registid": 67,
-            //   "age": 33
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600613,
-            //   "name": "王勃",
-            //   "diagnosestate": 2,
-            //   "registid": 73,
-            //   "age": 22
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600615,
-            //   "name": "陶渊明",
-            //   "diagnosestate": 2,
-            //   "registid": 75,  
-            //   "age": 33
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600617,
-            //   "name": "苏洵",
-            //   "diagnosestate": 1,
-            //   "registid": 76,
-            //   "age": 8
-            // },
-            // {
-            //   "gender": "女",
-            //   "medicalrecordid": 600653,
-            //   "name": "张望",
-            //   "diagnosestate": 1,
-            //   "registid": 152,
-            //   "age": 21
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600654,
-            //   "name": "张文",
-            //   "diagnosestate": 2,
-            //   "registid": 153,
-            //   "age": 21
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600654,
-            //   "name": "张三",
-            //   "diagnosestate": 1,
-            //   "registid": 155,
-            //   "age": 21
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600655,
-            //   "name": "王杰",
-            //   "diagnosestate": 1,
-            //   "registid": 156,
-            //   "age": 20
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600657,
-            //   "name": "李四",
-            //   "diagnosestate": 1,
-            //   "registid": 158,
-            //   "age": 21
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600658,
-            //   "name": "王五",
-            //   "diagnosestate": 1,
-            //   "registid": 159,
-            //   "age": 21
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600662,
-            //   "name": "张伟",
-            //   "diagnosestate": 1,
-            //   "registid": 163,
-            //   "age": 21
-            // },
-            // {
-            //   "gender": "男",
-            //   "medicalrecordid": 600663,
-            //   "name": "李玉欢",
-            //   "diagnosestate": 1,
-            //   "registid": 167,
-            //   "age": 21
             // }
           ]
           }

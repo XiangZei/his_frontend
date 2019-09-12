@@ -13,7 +13,6 @@
       <el-col :span="2"><div class="grid-content bg-purple-light"><el-link @click="refresh">刷新</el-link></div></el-col>
       <el-col :span="7"><div class="grid-content bg-purple" style="text-align: right"  ><el-link @click="beforeadddrug" :disabled="show">增药</el-link></div></el-col>
       <el-col :span="3"><div class="grid-content bg-purple-light"style="text-align: left;padding-left: 30px;"><el-link @click="deletedrug" :disabled="show">删药</el-link></div></el-col>
-
     </el-row>
 
     <el-row >
@@ -144,25 +143,24 @@
       </el-tab-pane>
       <el-tab-pane label="常用药品" name="second">配置管理</el-tab-pane>
     </el-tabs>
-
     <el-dialog
-      title="提示"
+      title="请输入处方名称"
       :visible.sync="dialogVisible"
       width="30%">
-      <span><el-input v-model="newprescriptionname" placeholder="请输入新的处方名称"></el-input></span>
+      <span><el-input v-model="newprescriptionname" placeholder="处方名称"></el-input></span>
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="addprescription">确 定</el-button>
+    <el-button type="primary" @click="addprescription">{{prescription_button}}</el-button>
   </span>
     </el-dialog>
     <el-dialog
       title="添加药品"
       :visible.sync="adddrugVisible"
-      width="30%">
+      width="40%">
       <el-row :gutter="10" style="margin-left: 69px;">
-       <el-col :span="12">
-         <el-input v-model="drugcode" placeholder="请输入药品助记码" @keyup.enter.native="searchdrug(drugcode)"></el-input>
-       </el-col>
+        <el-col :span="12">
+          <el-input v-model="drugcode" placeholder="请输入药品助记码" @keyup.enter.native="searchdrug(drugcode)"></el-input>
+        </el-col>
       <el-col :span="6">
         <el-button type="primary" @click="searchdrug(drugcode)">搜索</el-button>
       </el-col>
@@ -212,13 +210,13 @@
       </el-row>
       <el-row :gutter="10" style="margin-top: 10px;">
         <el-col :span="6">
-          <el-select v-model="row.usage" filterable placeholder="用法">
+          <el-select v-model="row.usage" allow-create filterable placeholder="用法">
             <el-option label="口服" value="口服"></el-option>
             <el-option label="外敷" value="外敷"></el-option>
           </el-select>
         </el-col>
         <el-col :span="6">
-          <el-select v-model="row.uselevel" filterable placeholder="用量">
+          <el-select v-model="row.uselevel" allow-create filterable placeholder="用量">
             <el-option label="1勺" value="1勺"></el-option>
             <el-option label="2勺" value="2勺"></el-option>
             <el-option label="10g" value="10g"></el-option>
@@ -227,14 +225,14 @@
           </el-select>
         </el-col>
         <el-col :span="6">
-          <el-select v-model="row.freq" filterable placeholder="频次">
+          <el-select v-model="row.freq" allow-create filterable placeholder="频次">
             <el-option label="一日三次" value="一日三次"></el-option>
             <el-option label="一日二次" value="一日二次"></el-option>
             <el-option label="一日一次" value="一日一次"></el-option>
           </el-select>
         </el-col>
         <el-col :span="6">
-          <el-select v-model="row.num" filterable placeholder="数量">
+          <el-select v-model="row.num" allow-create filterable placeholder="数量">
             <el-option
               v-for="item in 10"
               :key="item"
@@ -288,14 +286,6 @@
             // {
             // prescriptionname:"感冒1",
             // status:"未开立"
-            // },
-            // {
-            //   prescriptionname:"感冒2",
-            //   status:"未开立"
-            // },
-            // {
-            //   prescriptionname:"感冒2",
-            //   status:"未开立"
             // }
           ],
           //   prescriptionname:"感冒2",
@@ -311,70 +301,22 @@
             //   uselevel:"5g",
             //   freq:"一日二次",
             //   num:10
-            // },
-            // {
-            //   drugid:1,
-            //   prescriptionname:"感冒2",
-            //   drugname:"注射用甲氨喋呤",
-            //   drugstd:"25g/瓶",
-            //   drugfee:10,
-            //   usage:"口服",
-            //   uselevel:"5g",
-            //   freq:"一日二次",
-            //   num:10
-            // },{
-            //   drugid:1,
-            //   prescriptionname:"感冒2",
-            //   drugname:"注射用甲氨喋呤",
-            //   drugstd:"25g/瓶",
-            //   drugfee:10,
-            //   usage:"口服",
-            //   uselevel:"5g",
-            //   freq:"一日二次",
-            //   num:10
             // }
           ],
-          //   drugid:1,
-          //   prescriptionname:"感冒1",
-          //   drugname:"注射用甲氨喋呤",
-          //   drugstd:"25g/瓶",
-          //   drugfee:10,
-          //   usage:"口服",
-          //   uselevel:"5g",
-          //   freq:"一日二次",
-          //   num:10
           druglist:[
             // {
             //   drugid:1,
             //   drugname:"注射用甲氨喋呤",
             //   drugstd:"25g/瓶",
             //   drugfee:10
-            // },{
-            //   drugid:2,
-            //   drugname:"伺机待发",
-            //   drugstd:"25g/瓶",
-            //   drugfee:10
-            // },{
-            //   drugid:3,
-            //   drugname:"敌敌畏",
-            //   drugstd:"25g/瓶",
-            //   drugfee:10
-            // },{
-            //   drugid:4,
-            //   drugname:"领事馆",
-            //   drugstd:"25g/瓶",
-            //   drugfee:10
             // }
           ],
-          //   drugid:1,
-          //   drugname:"注射用甲氨喋呤",
-          //   drugstd:"25g/瓶",
-          //   drugfee:10
           dialogVisible:false,
           prescriptionSelection:[],
           drugSelection:[],
 
-          row:{}
+          row:{},
+          prescription_button:"确定"
         }
       },
       methods:{
@@ -460,6 +402,10 @@
           })
         },
         adddrug(index,row){
+          if(this.prescriptiondetaillistcomputed.length==5){
+            this.$message.error("药品数量不能超过五个")
+            return
+          }
           this.row.drugid = row.drugid;
           this.row.drugname= row.drugname;
           this.row.drugstd=row.drugstd;
@@ -490,13 +436,13 @@
             }
           }
           if(this.newprescriptionname===""){
-            this.$message.error("处方名称不能未空，请重新输入");
-            return
+            this.newprescriptionname = "处方"+this.prescriptionlist.length;
           }
           this.prescriptionlist.push({
             prescriptionname:this.newprescriptionname,
             status:"未开立"
           });
+          this.newprescriptionname="";
           this.$message({
             message:"处方添加成功",
             type:"success"
