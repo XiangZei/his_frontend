@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container style="opacity:0.9;">
     <el-tag type="success" style="text-align: right">待诊病人信息<el-link @click="refresh1" style="margin-left: 110px;">刷新</el-link></el-tag>
     <el-container>
       <el-main style=" padding:0 ;">

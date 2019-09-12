@@ -213,11 +213,7 @@
                     //检查病历填写情况
                         //修改挂号信息上的诊断状态为已诊断
                     changestatus(this.medicalmainpage.registid).then(response=>{
-                      this.$message({
-                        message: '就诊信息已经修改',
-                        type: 'success',
-                        duration:1000
-                      });
+                      console.log("就诊信息已经修改");
                     }).catch(error=>{
                       return 
                       this.$message({

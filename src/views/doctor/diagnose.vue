@@ -1,5 +1,5 @@
 <template>
-    <el-container  style="opacity:0.8;">
+    <el-container  style="">
         <el-aside class="el-aside" width="25%">
           <el-button type="primary" @click="refresh" style="padding: 4px 12px;">重新拉取诊断信息</el-button>
           <el-tabs v-model="activeName1" @tab-click="handleClick" >
