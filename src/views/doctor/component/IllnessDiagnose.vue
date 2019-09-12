@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="">
     <el-row :gutter="20" style="margin-top: 5px;width: 30%;">
       <el-col :span="10"><div class="grid-content bg-purple">评估/诊断</div></el-col>
       <el-col :span="4" v-show="cansee11"><div class="grid-content bg-purple"><el-link  @click="choosetype1">中医</el-link></div></el-col>
@@ -245,5 +245,7 @@
 </script>
 
 <style scoped>
-
+.bg-purple{
+  color:rgb(42,241,235)
+}
 </style>

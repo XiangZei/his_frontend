@@ -1,6 +1,6 @@
 <template>
 
-  <p>
+  <p style="opacity:0.9;">
 
     <el-input v-model="tableDataName" placeholder="请输入姓名" style="width:240px"></el-input>
 

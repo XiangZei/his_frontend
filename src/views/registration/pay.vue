@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div  style="  opacity:0.9;">
     <el-row :gutter="20">
       <el-col :span="4"><div class="grid-content bg-purple text">患者信息查询</div></el-col>
     </el-row>
@@ -23,12 +23,12 @@
       <el-col :span="4"><div class="grid-content bg-purple text">患者消费信息</div></el-col>
     </el-row>
 
-    <el-table
+    <el-table v-loading="loading" 
       :data="prescriptionmsg"
       border
       size="mini"
       @selection-change="handleSelectRegistmsg"
-      style="width: 100%">
+      style="width: 100%;opacity:0.6;">
       <el-table-column
         type="selection"
 
@@ -151,6 +151,7 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
 
     data() {
       return {
+        loading:false,
         medicalrecordid:"",
         registSelection: [],
         fee:"",
@@ -187,15 +188,19 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
         }).catch(error=>{
           console.log("病人信息获取失败")
         });
+        this.loading=true;
         getPreMsg(this.medicalrecordid).then(response=>{
+          
           this.prescriptionmsg  = response.data;
           for(var a in this.prescriptionmsg){
             this.prescriptionmsg[a].name=this.patientdetail.name;
           }
+          this.loading=false;
           console.log("成功获取病人处方信息")
         }).catch(error=>{
           console.log("病人处方信息获取失败")
         })
+        
       },
       settlement(){
         this.$refs.form.validate(validate=>{
