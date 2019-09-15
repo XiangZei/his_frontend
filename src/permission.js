@@ -1,14 +1,16 @@
 import Nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
-import {getToken} from "@/utils/auth";
+import {getToken,removeToken} from "@/utils/auth";
 import {Message} from 'element-ui'
 import router from './router'
 import store from './store'
+
 //路由拦截
 router.beforeEach((to,from,next)=>{
   Nprogress.start();
   if(getToken()){
     if(to.path==='/'){
+      removeToken(); //删掉token
       next()
       Nprogress.done()
     }else{

@@ -83,7 +83,7 @@
 .fulbg{
   margin-top:0;
   height: 600px;
-  background: url(../../assets/bg1.jpg);
+  background: url(../../assets/bg1.png);
   background-size: 100% 100%;
 }
 .bg{

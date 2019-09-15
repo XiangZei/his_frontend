@@ -1,5 +1,5 @@
 <template>
-    <div style="opacity:0.9;">
+    <div>
       <el-row style="margin-bottom: 10px;">
         <el-col :span="4">
           <el-button v-on:click="clearmsg">清空表单数据</el-button>

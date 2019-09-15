@@ -1,5 +1,5 @@
 <template>
-  <div  style="  opacity:0.9;">
+  <div  >
     <el-row :gutter="20">
       <el-col :span="4"><div class="grid-content bg-purple text">患者信息查询</div></el-col>
     </el-row>
