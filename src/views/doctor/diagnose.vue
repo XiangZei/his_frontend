@@ -22,7 +22,7 @@
                 <el-tab-pane label="病历首页" name="first">
                   <medical-main-page :patient="this.patient" :cansee3="this.patient.medicalrecordid===''"></medical-main-page>
                 </el-tab-pane>
-                <el-tab-pane label="成药处方" name="third">
+                <el-tab-pane label="成药处方" name="third" :disabled = "canAddMedicine">
                   <prescription-pane :active="activeName" :patient="this.patient"></prescription-pane>
                 </el-tab-pane>
 
@@ -93,6 +93,11 @@ export default {
         })
       }
     },
+  computed:{
+    canAddMedicine(){
+      return this.patient.diagnosestate !=2
+    }
+  },
   created() {
     this.docid=localStorage.getItem("name")
     getpatientlist(this.docid).then(response=>{

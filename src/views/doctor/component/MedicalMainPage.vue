@@ -239,7 +239,7 @@
                               console.log("初诊信息提交失败")
                             })
                           }
-
+                          this.medicalmainpage={};
                           this.patient.medicalrecordid="";
                           this.patient.registid="";
                           this.patient.name="";
@@ -264,7 +264,7 @@
                                   console.log("初诊信息提交失败")
                                 })
                               }
-
+                              this.medicalmainpage={};
                               this.patient.medicalrecordid="";
                               this.patient.registid="";
                               this.patient.name="";
@@ -296,6 +296,8 @@
             for(var key in this.patient){
               this.patient[key]="";
             }
+            this.diagnoseill =[]
+          this.medicalmainpage={}
         }
       }
     }

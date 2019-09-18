@@ -98,7 +98,14 @@
       methods:{
         usetemplate(){
           if(this.name!==""){
+
             var pname = "模板:"+this.name;
+            for(var a in this.prescriptionlist){
+              if(this.prescriptionlist[a]==pname){
+                this.$message.error("该处方模板已增加，不可重复添加")
+                return;
+              }
+            }
             this.prescriptionlist.push({
                 prescriptionname:"模板:"+this.name,
                 status:"未开立"

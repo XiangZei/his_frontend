@@ -320,7 +320,12 @@
           prescriptionSelection:[],
           drugSelection:[],
 
-          row:{},
+          row:{
+            usage:"",
+            uselevel:"",
+            freq:"",
+            num:1
+          },
           prescription_button:"确定"
         }
       },
@@ -396,6 +401,7 @@
           for(var e in this.row){
             this.row[e]="";
           }
+          this.row["num"]=1;
           this.drugusageVisible = false;
         },
         searchdrug(val){
@@ -412,6 +418,7 @@
             this.$message.error("药品数量不能超过五个")
             return
           }
+
           this.row.drugid = row.drugid;
           this.row.drugname= row.drugname;
           this.row.drugstd=row.drugstd;
@@ -456,21 +463,34 @@
           this.dialogVisible = false
         },
         deletepre(){
-          for(var a in this.prescriptionSelection){
-            if(this.prescriptionSelection[a].status==="未开立"){
+          if(this.prescriptionSelection.length>0){
+            for(var a in this.prescriptiondetaillist){
               var index = -1;
-              for (var i = 0; i < this.prescriptionlist.length; i++) {
-                if (this.prescriptionlist[i].prescriptionname === this.prescriptionSelection[a].prescriptionname) index = i;
+              for(var i=0;i<this.prescriptiondetaillist.length;i++){
+                if(this.prescriptiondetaillist[i].prescriptionname==this.prescriptionname){index = i; break}
               }
-              if (index > -1) {
-                this.prescriptionlist.splice(index, 1);
-                this.prescriptionname="";
+              if(index>-1){
+                this.prescriptiondetaillist.splice(index,1);
+              }
 
+            }
+            for(var a in this.prescriptionSelection){
+              if(this.prescriptionSelection[a].status==="未开立"){
+                var index = -1;
+                for (var i = 0; i < this.prescriptionlist.length; i++) {
+                  if (this.prescriptionlist[i].prescriptionname === this.prescriptionSelection[a].prescriptionname) index = i;
+                }
+                if (index > -1) {
+                  this.prescriptionlist.splice(index, 1);
+                  this.prescriptionname="";
+
+                }
+              }else if(this.prescriptionSelection[a].status==="已开立"){
+                this.$message.error("已开立的处方无法删除");
               }
-            }else if(this.prescriptionSelection[a].status==="已开立"){
-              this.$message.error("已开立的处方无法删除");
             }
           }
+
         },
         openpre(){
 
@@ -527,7 +547,12 @@
           this.drugSelection = val;
         },
         refresh(){
-          this.prescriptionlist=[]
+            for(var a in this.prescriptionlist){
+              this.prescriptionname = this.prescriptionlist[a].prescriptionname;
+              this.deletepre()
+            }
+            this.prescriptionlist=[];
+            this.prescriptionname=""
         }
       },
       computed:{

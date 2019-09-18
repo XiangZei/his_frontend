@@ -137,6 +137,10 @@
           }
         },
         handlerlogin(){
+          if(this.loginForm.type==""){
+            this.$message.error("请选择医生类型");
+            return;
+          }
           this.$refs.loginForm.validate(valid=>{
             if(valid){
               this.loading=true;
