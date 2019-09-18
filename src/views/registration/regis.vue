@@ -2,7 +2,7 @@
     <div>
       <el-row style="margin-bottom: 10px;">
         <el-col :span="4">
-          <el-button v-on:click="clearmsg">清空表单数据</el-button>
+
         </el-col>
       </el-row>
         <el-form   size="medium" ref="form" :model="form" :rules="formRules"  label-width="100px">
@@ -177,6 +177,7 @@
                             <el-switch
                                 v-model="form.medicalRecord"
                                 active-color="#13ce66"
+                                :change="plusfee"
                                 inactive-color="#ff4949">
                             </el-switch>
                         </el-form-item>
@@ -201,15 +202,25 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="7">
-                        <el-form-item size="large">
-                            <el-button type="primary" @click.native.prevent="onSubmit">立即创建</el-button>
-                        </el-form-item>
-                    </el-col>
+
 
             </el-row>
+          <el-row :gutter="10">
+            <el-col :span="7">
+              <div style="color: #ffffff;">-</div>
+            </el-col>
+            <el-col :span="3">
+              <el-form-item size="large">
+                <el-button type="primary" @click.native.prevent="onSubmit">挂号</el-button>
+              </el-form-item>
 
-
+            </el-col>
+            <el-col :span="3">
+              <el-form-item size="large">
+                <el-button  type="danger" v-on:click="clearmsg">清空</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
 
     </div>
@@ -261,26 +272,26 @@ export default {
                 chargeType:[{required:true,trigger:'blur'}]
             },
             baseData:{
-                    "gender": [],
-                    "regType": [],
-                    "depMsg": [],
-                    "docList": [],
-                    "medicalNum":[],
-                    "ageType":[
-                        {"label":"岁"},
-                        {"label":"月"}
-                    ],
-                    "settlementType":[
-                        {"label":"自费"},
-                        {"label":"医保"},
-                        {"label":"新农合"},
-                        {"label":"公费"}
-                    ],
-                    "apm":[
-                        {"label":"上午"},
-                        {"label":"下午"}
-                    ]
-                }
+            "gender": [],
+            "regType": [],
+            "depMsg": [],
+            "docList": [],
+            "medicalNum":[],
+            "ageType":[
+              {"label":"岁"},
+              {"label":"月"}
+            ],
+            "settlementType":[
+              {"label":"自费"},
+              {"label":"医保"},
+              {"label":"新农合"},
+              {"label":"公费"}
+            ],
+            "apm":[
+              {"label":"上午"},
+              {"label":"下午"}
+            ]
+          }
         }
     },
     /**
@@ -291,7 +302,27 @@ export default {
         "limi": 20}]
      */
     methods:{
+      plusfee(val){
+        if(val){
+          this.form.fee+=1
+        }else{
+          this.form.fee-=1
+        }
+      },
         onSubmit(){
+          if(this.form.idNumber.length<18){
+            this.$message.error("身份证号长度不能小于18")
+            return;
+          }
+          if( new Date(this.form.birthday)>new Date()){
+            this.$message.error("出生日期不能超前,请重新选择出生日期")
+            return;
+          }
+          if(new Date(this.form.date1)>new Date()){
+            this.$message.error("看诊日期不能超前，请重新选择看诊日期")
+            return;
+          }
+
             this.form.registor = this.$store.state.user.id;
             this.$refs.form.validate(validate=>{
                 if(validate){
@@ -356,18 +387,18 @@ export default {
             })
         },
         querySearch(queryString,cb){
-            var medicalNums = this.baseData.medicalNum;
-            var results = queryString? medicalNums.filter(
-                (str)=>{
-                        return (str.inde.toString().indexOf(queryString))===0;
-                    }
-                ):medicalNums;
-            //调用callback返回建议列表数据
-            results.forEach(e=>{
-                e.inde = e.inde.toString()
-            })
-            cb(results);
-        },
+        var medicalNums = this.baseData.medicalNum;
+        var results = queryString? medicalNums.filter(
+          (str)=>{
+            return (str.inde.toString().indexOf(queryString))===0;
+          }
+        ):medicalNums;
+        //调用callback返回建议列表数据
+        results.forEach(e=>{
+          e.inde = e.inde.toString()
+        })
+        cb(results);
+      },
         clearmsg(){
             for(var key in this.form){
                 this.form[key]='';

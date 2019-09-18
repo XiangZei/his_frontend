@@ -43,13 +43,13 @@
                 </el-col>
                 <el-col :span="8"  :lg="8">
                   <div  class="grid-content" style="text-align:right; position: relative;">
-                    
+
                     <el-dropdown>
                       <span>
                           <el-avatar  icon="el-icon-user" style="background-color: rgb(184, 203, 243)">
                           </el-avatar>
                       </span>
-                            
+
                           <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
                               <div v-on:click="logout">退出</div>
@@ -62,7 +62,9 @@
 
             </el-header>
             <el-main style="padding: 3px 10px;" class="fulbg " >
-              <router-view/>
+              <transition name="el-zoom-in-bottom">
+                <router-view/>
+              </transition>
             </el-main>
           </el-container>
         </el-container>
@@ -143,17 +145,17 @@ export default {
   }
   .fulbg{
   margin-top:0;
-  background: url(../assets/bg2.jpg);
-  
-  
+  background: url(../assets/bg3.jpg);
+
+
 }
 .fulbg1{
-  
+
   background: url(../assets/bg3.gif) no-repeat;
   background-size: auto 763px;
 }
 .fulbg2{
-  
+
   background: url(../assets/bg5.jpg);
 }
 

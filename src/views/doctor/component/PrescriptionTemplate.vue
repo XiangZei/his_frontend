@@ -34,7 +34,7 @@
           <div style="text-align: left;">
             <el-row >
              <el-col :span="6"><el-alert type="success" style=" padding: 7px 15px" :closable="false">处方模板明细</el-alert></el-col>
-              <el-col :span="18"><el-alert type="success" style=" padding: 5px 15px;" :closable="false"><el-link  style="text-align: right;" @click="usetemplate">使用该模板</el-link></el-alert></el-col>
+              <el-col :span="18"><el-alert type="success" style=" padding: 5px 15px;" :closable="false"><el-link  style="text-align: right;" :underline="false" icon="el-icon-position" @click="usetemplate">使用该模板</el-link></el-alert></el-col>
             </el-row>
 
           </div>

@@ -1,13 +1,13 @@
 <template>
   <div>
     <el-row :gutter="30">
-      <el-col :span="6"><div class="grid-content bg-purple"><el-link icon="el-icon-s-order" @click="temporarysto">暂存</el-link></div></el-col>
-      <el-col :span="6"><div class="grid-content bg-purple"><el-link icon="el-icon-success" @click="submit">提交</el-link></div></el-col>
-      <el-col :span="6"><div class="grid-content bg-purple"><el-link icon="el-icon-delete" @click="refreshMsg">清空所有</el-link></div></el-col>
-      <el-col :span="6"><div class="grid-content bg-purple"><el-link icon="el-icon-circle-plus" @click="refreshMsg" >刷新</el-link></div></el-col>
+      <el-col :span="6"><div class="grid-content" style="background: #acfed0;"><el-link icon="el-icon-s-order" @click="temporarysto">暂存</el-link></div></el-col>
+      <el-col :span="6"><div class="grid-content " style="background: #bafed5;"><el-link icon="el-icon-success" @click="submit">提交</el-link></div></el-col>
+      <el-col :span="6"><div class="grid-content " style="background: #aafecc;"><el-link icon="el-icon-delete" @click="refreshMsg">清空所有</el-link></div></el-col>
+      <el-col :span="6"><div class="grid-content " style="background: #a5fec2;"><el-link icon="el-icon-circle-plus" @click="refreshMsg" >刷新</el-link></div></el-col>
     </el-row>
     <el-row :gutter="20" style="margin-top: 5px;width: 30%;">
-      <el-col :span="10"><div class="grid-content bg-purple">病史信息</div></el-col>
+      <el-col :span="10"><div class="grid-content" style="background:#a6b6fe;">病史信息</div></el-col>
     </el-row>
 
     <el-container>
@@ -203,8 +203,15 @@
               });
 
             }else{
+
               this.medicalmainpage.registid= this.patient.registid;
               this.medicalmainpage.medicalrecordid=this.patient.medicalrecordid;
+              for(var a in this.medicalmainpage){
+                if(this.medicalmainpage[a]===""){
+                  this.$message.error("病历内容不能为空")
+                  return;
+                }
+              }
                 this.$confirm("是否提交病历？","提示",{
                   confirmButtonText:"确认",
                   cancelButtonText:"取消",
@@ -215,7 +222,7 @@
                     changestatus(this.medicalmainpage.registid).then(response=>{
                       console.log("就诊信息已经修改");
                     }).catch(error=>{
-                      return 
+                      return
                       this.$message({
                         message:'就诊信息修改失败',
                         type:'failed',

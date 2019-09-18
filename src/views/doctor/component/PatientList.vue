@@ -1,6 +1,6 @@
 <template>
   <el-container >
-    <el-tag type="success" style="text-align: right">待诊病人信息<el-link @click="refresh1" style="margin-left: 110px;">刷新</el-link></el-tag>
+    <el-tag type="success" style="text-align: right">待诊病人信息<el-link  :underline="false" type="info" @click="refresh1" icon="el-icon-refresh" style="margin-left: 110px;"></el-link></el-tag>
     <el-container>
       <el-main style=" padding:0 ;">
         <el-table size="mini" :stripe=true @row-dblclick ="starttodiagnose" border height="250"
@@ -45,7 +45,7 @@
     </el-container>
     <el-header style="height:0px;">
     </el-header>
-    <el-tag type="success" style="text-align: right">已诊病人信息<el-link @click="refresh2" style="margin-left: 110px;">刷新</el-link></el-tag>
+    <el-tag type="warning" style="text-align: right">已诊病人信息<el-link :underline="false" type="info" icon="el-icon-refresh" @click="refresh2" style="margin-left: 110px;"></el-link></el-tag>
 
     <el-container>
       <el-main style="padding:0 ;">
