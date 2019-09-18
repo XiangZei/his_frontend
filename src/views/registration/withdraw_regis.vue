@@ -164,6 +164,7 @@ export default {
 
   data() {
     return {
+      canEdit:false,
       baseData:{},
       medicalrecordid:"",
       patientdetail:{

@@ -105,6 +105,7 @@ import {distributemedicine,getpatientmsg,getPreMsg_medicine} from "@/api/registr
 
     data() {
       return {
+        canEdit:false,
         baseData:{},
         medicalrecordid:"",
         registSelection: [],

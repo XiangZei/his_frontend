@@ -162,6 +162,7 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
 
     data() {
       return {
+        canEdit:false,
         baseData:{},
         loading:false,
         medicalrecordid:"",

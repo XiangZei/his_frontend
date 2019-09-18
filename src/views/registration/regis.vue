@@ -177,7 +177,7 @@
                             <el-switch
                                 v-model="form.medicalRecord"
                                 active-color="#13ce66"
-                                :change="plusfee"
+                                @change="plusfee"
                                 inactive-color="#ff4949">
                             </el-switch>
                         </el-form-item>
