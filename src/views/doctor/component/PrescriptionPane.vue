@@ -2,7 +2,7 @@
   <div>
     <el-row :gutter="10">
       <el-col :span="2"> <el-link class="textleft color pos" style="background: #82fe4d" @click="getDiagnose" >门诊诊断</el-link></el-col>
-      <el-col :span="22"><div class="textleft color pos" style="background: #ffffff" >{{change}}</div></el-col>
+      <el-col :span="22"><div class="textleft color pos" style="background: #ffffff" >{{diagnosemsg}}</div></el-col>
     </el-row>
     <el-row>
       <el-col :span="4"><div class="grid-content bg-purple" style="background: #e3fef7;"></div></el-col>
@@ -279,6 +279,7 @@
       },
       data(){
         return{
+          init:0,
           drugusageVisible:false,
           drugcode:"",
           show:false,
@@ -427,10 +428,11 @@
 
         },
         cancel(){
+
           for(var a in this.prescriptionSelection){
             if(this.prescriptionSelection[a].status==="已开立"){
               this.prescriptionSelection[a].status="已作废"
-              cancel(this.prescriptionSelection[a].prescriptionname,this.patient.registid,this.patient.mdeicalrecordid).then(response=>{
+              cancel(this.prescriptionSelection[a].prescriptionname,this.patient.registid,this.patient.medicalrecordid).then(response=>{
                 this.$message({
                   message:"处方已经作废",
                   type:'success'
@@ -492,7 +494,7 @@
           }
 
         },
-        openpre(){
+        async openpre(){
 
 
         var docid = localStorage.getItem("name");
@@ -504,7 +506,7 @@
 
               for(var prescrip in this.prescriptionSelection){
                   this.prescriptionSelection[prescrip].status = "已开立";
-                  openpre(medicalrecordid,registid,docid,this.prescriptionSelection[prescrip].prescriptionname).then(response=>{
+                 await openpre(medicalrecordid,registid,docid,this.prescriptionSelection[prescrip].prescriptionname).then(response=>{
                     var data = response.data;
                     var id = data.id;
                     this.$message({
@@ -517,7 +519,7 @@
                     })
                     var er = true;
                     for(var drug in druglist){
-                      filldetail(id,druglist[drug]).then(response=>{
+                     filldetail(id,druglist[drug]).then(response=>{
                         this.$message({
                           message:"成功添加药品明细",
                           type:"success",
@@ -555,13 +557,17 @@
             this.prescriptionname=""
         }
       },
-      computed:{
+      mounted:{
         change(){
+
           if(this.active==='third'){
-              this.getDiagnose();
+            this.getDiagnose();
           }
-          return this.diagnosemsg;
-        },
+
+        }
+      },
+      computed:{
+
         prescriptiondetaillistcomputed:function(){
           return this.prescriptiondetaillist.filter(data=>{
             return data.prescriptionname===this.prescriptionname;

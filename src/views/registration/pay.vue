@@ -239,6 +239,7 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
 
       },
       settlement(){
+
         this.$refs.form.validate(validate=>{
           if(validate){
             var docid=localStorage.getItem("name");
@@ -291,7 +292,12 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
         cb(results);
       },
       feeSettlement(){
-
+        for(var a in this.registSelection){
+          if(this.registSelection[a].status==="已作废"){
+            this.$message.error("作废处方无法缴费")
+            return;
+          }
+        }
         if(this.registSelection.length===0){
           this.$message({
             message:"请先选中要缴费的项目",
