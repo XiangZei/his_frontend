@@ -5,8 +5,18 @@
     </el-row>
     <el-row :gutter="20">
       <el-col  :span="4" ><div class="grid-content ">病历号</div></el-col>
-      <el-col  :span="3"><div ><el-input v-model="medicalrecordid" placeholder="请输入内容"></el-input></div></el-col>
-      <el-col :span="3"><div><el-button type="primary" icon="el-icon-search" @click="fetchPreMsg">搜索</el-button></div></el-col>
+      <el-col  :span="3"><div ></div>
+        <el-autocomplete   popper-class="my-autocomplete" placeholder="输入病历号查找" v-model="medicalrecordid" :fetch-suggestions="querySearch"
+                           @select="fetchPreMsg" :disabled="canEdit">
+          <i  class="el-icon-edit el-input__icon"
+              slot="suffix">
+          </i>
+          <template slot-scope="{ item }">
+            <div class="name">{{ item.inde }}</div>
+          </template>
+        </el-autocomplete>
+      </el-col>
+      <el-col :span="3"><div><el-button type="primary" icon="el-icon-search" @click="etchPreMsg">搜索</el-button></div></el-col>
     </el-row>
     <el-row :gutter="20">
       <el-col :span="4"><div class="grid-content bg-purple text">患者信息确认</div></el-col>
@@ -23,7 +33,7 @@
       <el-col :span="4"><div class="grid-content bg-purple text">患者消费信息</div></el-col>
     </el-row>
 
-    <el-table v-loading="loading" 
+    <el-table v-loading="loading"
       :data="prescriptionmsg"
       border
       size="mini"
@@ -59,7 +69,7 @@
         prop="num"
         label="数量">
       </el-table-column>
-      <el-table-column 
+      <el-table-column
       prop="proname"
       label="名称">
 
@@ -79,7 +89,7 @@
       </el-table-column>
     </el-table>
     <el-row >
-      <el-col :span="4" style="text-align:left"><el-button type="primary" @click="feeSettlement">费用结算</el-button></el-col>
+      <el-col :span="4" style="text-align:left" ><el-button  type="warning" @click="feeSettlement">费用结算</el-button></el-col>
     </el-row>
 
     <el-dialog
@@ -146,11 +156,14 @@
 </template>
 
 <script>
+  import {getrequiremsg} from '@/api/registration'
 import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg,settlement_1,} from "@/api/registration"
   export default {
 
     data() {
       return {
+        canEdit:false,
+        baseData:{},
         loading:false,
         medicalrecordid:"",
         registSelection: [],
@@ -181,7 +194,7 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
     },
     methods: {
       //获取病人信息
-      fetchPreMsg(){
+      etchPreMsg(){
         getpatientmsg(this.medicalrecordid).then(response=>{
           this.patientdetail = response.data;
           console.log("成功获取病人信息")
@@ -190,7 +203,7 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
         });
         this.loading=true;
         getPreMsg(this.medicalrecordid).then(response=>{
-          
+
           this.prescriptionmsg  = response.data;
           for(var a in this.prescriptionmsg){
             this.prescriptionmsg[a].name=this.patientdetail.name;
@@ -200,9 +213,33 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
         }).catch(error=>{
           console.log("病人处方信息获取失败")
         })
-        
+
+      },
+      fetchPreMsg(item){
+        this.medicalrecordid = item.inde;
+        item = item.inde;
+        getpatientmsg(item).then(response=>{
+          this.patientdetail = response.data;
+          console.log("成功获取病人信息")
+        }).catch(error=>{
+          console.log("病人信息获取失败")
+        });
+        this.loading=true;
+        getPreMsg(item).then(response=>{
+
+          this.prescriptionmsg  = response.data;
+          for(var a in this.prescriptionmsg){
+            this.prescriptionmsg[a].name=this.patientdetail.name;
+          }
+          this.loading=false;
+          console.log("成功获取病人处方信息")
+        }).catch(error=>{
+          console.log("病人处方信息获取失败")
+        })
+
       },
       settlement(){
+
         this.$refs.form.validate(validate=>{
           if(validate){
             var docid=localStorage.getItem("name");
@@ -219,7 +256,7 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
 
                 // alert(registid+"   "+medicalrecordid+"   "+docid+"   "+this.form.paytype+"   "+this.form.invoiceid);
                 settlement_1(registid,docid,this.form,this.registSelection[a]).then(response=>{
-                  
+
                   console.log("结算完毕")
                 }).catch(error=>{
                   console.log("结算错误")
@@ -241,8 +278,26 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
       handleSelectRegistmsg(val){
         this.registSelection = val;
       },
+      querySearch(queryString,cb){
+        var medicalNums = this.baseData.medicalNum;
+        var results = queryString? medicalNums.filter(
+          (str)=>{
+            return (str.inde.toString().indexOf(queryString))===0;
+          }
+        ):medicalNums;
+        //调用callback返回建议列表数据
+        results.forEach(e=>{
+          e.inde = e.inde.toString()
+        })
+        cb(results);
+      },
       feeSettlement(){
-
+        for(var a in this.registSelection){
+          if(this.registSelection[a].status==="已作废"){
+            this.$message.error("作废处方无法缴费")
+            return;
+          }
+        }
         if(this.registSelection.length===0){
           this.$message({
             message:"请先选中要缴费的项目",
@@ -267,6 +322,16 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
       }).catch(error=>{
         console.log("支付方式获取失败")
       })
+    },
+    mounted() {
+      getrequiremsg().then(response=>{
+        var data = response.data;
+        this.baseData.gender = data.gender;
+        this.baseData.regType = data.regType;
+        this.baseData.depMsg = data.depMsg;
+        this.baseData.medicalNum=data.medicalNum;
+        this.baseData.chargeType=data.chargeType;
+      })
     }
 
   };
@@ -277,7 +342,7 @@ import {getPayType,startinvoice,feeSettlement,settlement,getpatientmsg,getPreMsg
   margin-top: 10px;
 }
 .bg-purple {
-    background: #aee6de;
+    background: #a5e67f;
 }
 .bg-purple-light {
     background: #e5e9f2;

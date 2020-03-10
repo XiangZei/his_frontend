@@ -6,8 +6,19 @@
       </el-row>
       <el-row :gutter="20">
         <el-col  :span="4" ><div class="grid-content ">病历号</div></el-col>
-        <el-col  :span="3"><div ><el-input v-model="medicalrecordid" placeholder="请输入内容"></el-input></div></el-col>
-        <el-col :span="3"><div><el-button type="primary" icon="el-icon-search" @click="fetchregistmsg">搜索</el-button></div></el-col>
+        <el-col  :span="3"><div >
+          <el-autocomplete   popper-class="my-autocomplete" placeholder="输入病历号查找" v-model="medicalrecordid" :fetch-suggestions="querySearch"
+                             @select="fetchregistmsg" :disabled="canEdit">
+            <i  class="el-icon-edit el-input__icon"
+                slot="suffix">
+            </i>
+            <template slot-scope="{ item }">
+              <div class="name">{{ item.inde }}</div>
+            </template>
+          </el-autocomplete>
+
+        </div></el-col>
+        <el-col :span="3"><div><el-button type="primary" icon="el-icon-search" @click="etchregistmsg">搜索</el-button></div></el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="4"><div class="grid-content bg-purple text">患者信息确认</div></el-col>
@@ -68,7 +79,7 @@
           label="操作"
           >
           <template slot-scope="scope">
-            <el-button @click="withdraw_regis(scope.row)" :disabled="scope.row.diagnosestate!=='已挂号'" type="text" size="small">退号</el-button>
+            <el-button  type="danger" @click="withdraw_regis(scope.row)" :disabled="scope.row.diagnosestate!=='已挂号'"  size="small">退号</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -76,13 +87,15 @@
     </div>
 </template>
 <script>
+
+  import {getrequiremsg} from '@/api/registration'
   import {getpatientmsg,getRegistMsg,withdrawRegis} from '@/api/registration'
 export default {
   name:'withdraw_regis',
   //  name,  gender,  birthday,  idNumber,address
   methods: {
     //获取病人信息
-    fetchregistmsg(){
+    etchregistmsg(){
       getpatientmsg(this.medicalrecordid).then(response=>{
         this.patientdetail = response.data;
         console.log("成功获取病人信息")
@@ -92,7 +105,23 @@ export default {
       //获取挂号信息
       getRegistMsg(this.medicalrecordid).then(response=>{
         this.registmsg  = response.data;
-        alert(this.registmsg)
+        console.log("成功获取病人挂号信息")
+      }).catch(error=>{
+        console.log("病人挂号信息获取失败")
+      })
+    },
+    fetchregistmsg(item){
+      item = item.inde;
+      this.medicalrecordid = item;
+      getpatientmsg(item).then(response=>{
+        this.patientdetail = response.data;
+        console.log("成功获取病人信息")
+      }).catch(error=>{
+        console.log("病人信息获取失败")
+      });
+      //获取挂号信息
+      getRegistMsg(item).then(response=>{
+        this.registmsg  = response.data;
         console.log("成功获取病人挂号信息")
       }).catch(error=>{
         console.log("病人挂号信息获取失败")
@@ -117,17 +146,42 @@ export default {
       }).catch(()=>{
         console.log("cancel")
       });
-    }
+    },
+    querySearch(queryString,cb){
+      var medicalNums = this.baseData.medicalNum;
+      var results = queryString? medicalNums.filter(
+        (str)=>{
+          return (str.inde.toString().indexOf(queryString))===0;
+        }
+      ):medicalNums;
+      //调用callback返回建议列表数据
+      results.forEach(e=>{
+        e.inde = e.inde.toString()
+      })
+      cb(results);
+    },
   },
 
   data() {
     return {
+      canEdit:false,
+      baseData:{},
       medicalrecordid:"",
       patientdetail:{
 
       },
       registmsg:[]
     }
+  },
+  mounted() {
+    getrequiremsg().then(response=>{
+      var data = response.data;
+      this.baseData.gender = data.gender;
+      this.baseData.regType = data.regType;
+      this.baseData.depMsg = data.depMsg;
+      this.baseData.medicalNum=data.medicalNum;
+      this.baseData.chargeType=data.chargeType;
+    })
   }
 }
 </script>
@@ -137,7 +191,7 @@ export default {
   margin-top: 10px;
 }
 .bg-purple {
-    background: #aee6de;
+    background: #9980e6;
 }
 .bg-purple-light {
     background: #e5e9f2;

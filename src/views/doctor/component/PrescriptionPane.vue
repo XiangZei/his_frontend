@@ -1,18 +1,18 @@
 <template>
   <div>
     <el-row :gutter="10">
-      <el-col :span="2"> <el-link class="textleft color pos" @click="getDiagnose" >门诊诊断</el-link></el-col>
-      <el-col :span="22"><div class="textleft color pos">{{diagnosemsg}}</div></el-col>
+      <el-col :span="2"> <el-link class="textleft color pos" style="background: #82fe4d" @click="getDiagnose" >门诊诊断</el-link></el-col>
+      <el-col :span="22"><div class="textleft color pos" style="background: #ffffff" >{{diagnosemsg}}</div></el-col>
     </el-row>
     <el-row>
-      <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="2"><div class="grid-content bg-purple-light"><el-link @click="dialogVisible = true">增方</el-link></div></el-col>
-      <el-col :span="2"><div class="grid-content bg-purple"><el-link @click="deletepre">删方</el-link></div></el-col>
-      <el-col :span="2"><div class="grid-content bg-purple-light"><el-link @click="openpre" :disabled="show">开立</el-link></div></el-col>
-      <el-col :span="2"><div class="grid-content bg-purple"><el-link @click="cancel">作废</el-link></div></el-col>
-      <el-col :span="2"><div class="grid-content bg-purple-light"><el-link @click="refresh">刷新</el-link></div></el-col>
-      <el-col :span="7"><div class="grid-content bg-purple" style="text-align: right"  ><el-link @click="beforeadddrug" :disabled="show">增药</el-link></div></el-col>
-      <el-col :span="3"><div class="grid-content bg-purple-light"style="text-align: left;padding-left: 30px;"><el-link @click="deletedrug" :disabled="show">删药</el-link></div></el-col>
+      <el-col :span="4"><div class="grid-content bg-purple" style="background: #e3fef7;"></div></el-col>
+      <el-col :span="2"><div class="grid-content " style="background: #c4fef0;"><el-link icon="el-icon-circle-plus-outline" @click="dialogVisible = true" :underline="false">增方</el-link></div></el-col>
+      <el-col :span="2"><div class="grid-content" style="background: #c1fefb;"><el-link icon="el-icon-remove-outline" @click="deletepre" :underline="false">删方</el-link></div></el-col>
+      <el-col :span="2"><div class="grid-content" style="background: #bbfef7;"><el-link icon="el-icon-circle-check" @click="openpre" :disabled="show" :underline="false">开立</el-link></div></el-col>
+      <el-col :span="2"><div class="grid-content bg-purple"  style="background: #c8fbfe;"><el-link icon="el-icon-circle-close" @click="cancel" :underline="false">作废</el-link></div></el-col>
+      <el-col :span="2"><div class="grid-content bg-purple-light"  style="background: #e2f4fe;"><el-link icon="el-icon-refresh" @click="refresh" :underline="false">刷新</el-link></div></el-col>
+      <el-col :span="7"><div class="grid-content bg-purple" style="text-align: right"  ><el-link icon="el-icon-circle-plus" @click="beforeadddrug" :disabled="show" :underline="false">增药</el-link></div></el-col>
+      <el-col :span="3"><div class="grid-content bg-purple-light"style="text-align: left;padding-left: 30px;"><el-link icon="el-icon-remove" @click="deletedrug" :disabled="show" :underline="false">删药</el-link></div></el-col>
     </el-row>
 
     <el-row >
@@ -258,6 +258,11 @@
       name: "PrescriptionPane",
       components:{PrescriptionTemplate},
       props:{
+        active:{
+          default:()=>{
+            return "";
+          }
+        },
         patient:{
           type:Object,
           default:()=>{
@@ -274,6 +279,7 @@
       },
       data(){
         return{
+          init:0,
           drugusageVisible:false,
           drugcode:"",
           show:false,
@@ -315,7 +321,12 @@
           prescriptionSelection:[],
           drugSelection:[],
 
-          row:{},
+          row:{
+            usage:"",
+            uselevel:"",
+            freq:"",
+            num:1
+          },
           prescription_button:"确定"
         }
       },
@@ -342,7 +353,7 @@
           this.row.uselevel=row.uselevel;
           this.row.freq=row.freq;
           this.row.num=row.num;
-          
+
           this.drugSelection=[];
           this.drugSelection[0]=row;
           this.deletedrug(row);
@@ -391,6 +402,7 @@
           for(var e in this.row){
             this.row[e]="";
           }
+          this.row["num"]=1;
           this.drugusageVisible = false;
         },
         searchdrug(val){
@@ -407,6 +419,7 @@
             this.$message.error("药品数量不能超过五个")
             return
           }
+
           this.row.drugid = row.drugid;
           this.row.drugname= row.drugname;
           this.row.drugstd=row.drugstd;
@@ -415,10 +428,11 @@
 
         },
         cancel(){
+
           for(var a in this.prescriptionSelection){
             if(this.prescriptionSelection[a].status==="已开立"){
               this.prescriptionSelection[a].status="已作废"
-              cancel(this.prescriptionSelection[a].prescriptionname,this.patient.registid,this.patient.mdeicalrecordid).then(response=>{
+              cancel(this.prescriptionSelection[a].prescriptionname,this.patient.registid,this.patient.medicalrecordid).then(response=>{
                 this.$message({
                   message:"处方已经作废",
                   type:'success'
@@ -451,24 +465,37 @@
           this.dialogVisible = false
         },
         deletepre(){
-          for(var a in this.prescriptionSelection){
-            if(this.prescriptionSelection[a].status==="未开立"){
+          if(this.prescriptionSelection.length>0){
+            for(var a in this.prescriptiondetaillist){
               var index = -1;
-              for (var i = 0; i < this.prescriptionlist.length; i++) {
-                if (this.prescriptionlist[i].prescriptionname === this.prescriptionSelection[a].prescriptionname) index = i;
+              for(var i=0;i<this.prescriptiondetaillist.length;i++){
+                if(this.prescriptiondetaillist[i].prescriptionname==this.prescriptionname){index = i; break}
               }
-              if (index > -1) {
-                this.prescriptionlist.splice(index, 1);
-                this.prescriptionname="";
+              if(index>-1){
+                this.prescriptiondetaillist.splice(index,1);
+              }
 
+            }
+            for(var a in this.prescriptionSelection){
+              if(this.prescriptionSelection[a].status==="未开立"){
+                var index = -1;
+                for (var i = 0; i < this.prescriptionlist.length; i++) {
+                  if (this.prescriptionlist[i].prescriptionname === this.prescriptionSelection[a].prescriptionname) index = i;
+                }
+                if (index > -1) {
+                  this.prescriptionlist.splice(index, 1);
+                  this.prescriptionname="";
+
+                }
+              }else if(this.prescriptionSelection[a].status==="已开立"){
+                this.$message.error("已开立的处方无法删除");
               }
-            }else if(this.prescriptionSelection[a].status==="已开立"){
-              this.$message.error("已开立的处方无法删除");
             }
           }
+
         },
-        openpre(){
-          
+        async openpre(){
+
 
         var docid = localStorage.getItem("name");
         var medicalrecordid = this.patient.medicalrecordid;
@@ -479,7 +506,7 @@
 
               for(var prescrip in this.prescriptionSelection){
                   this.prescriptionSelection[prescrip].status = "已开立";
-                  openpre(medicalrecordid,registid,docid,this.prescriptionSelection[prescrip].prescriptionname).then(response=>{
+                 await openpre(medicalrecordid,registid,docid,this.prescriptionSelection[prescrip].prescriptionname).then(response=>{
                     var data = response.data;
                     var id = data.id;
                     this.$message({
@@ -492,7 +519,7 @@
                     })
                     var er = true;
                     for(var drug in druglist){
-                      filldetail(id,druglist[drug]).then(response=>{
+                     filldetail(id,druglist[drug]).then(response=>{
                         this.$message({
                           message:"成功添加药品明细",
                           type:"success",
@@ -510,10 +537,10 @@
               }).catch(error=>{
                 this.$message.error("处方添加错误")
               })
-              
+
             }
         }
-          
+
         },
         handleSelectPrescription(val){
           this.prescriptionSelection=val;
@@ -522,10 +549,25 @@
           this.drugSelection = val;
         },
         refresh(){
-          this.prescriptionlist=[]
+            for(var a in this.prescriptionlist){
+              this.prescriptionname = this.prescriptionlist[a].prescriptionname;
+              this.deletepre()
+            }
+            this.prescriptionlist=[];
+            this.prescriptionname=""
+        }
+      },
+      mounted:{
+        change(){
+
+          if(this.active==='third'){
+            this.getDiagnose();
+          }
+
         }
       },
       computed:{
+
         prescriptiondetaillistcomputed:function(){
           return this.prescriptiondetaillist.filter(data=>{
             return data.prescriptionname===this.prescriptionname;

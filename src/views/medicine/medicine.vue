@@ -5,8 +5,19 @@
     </el-row>
     <el-row :gutter="20">
       <el-col  :span="4" ><div class="grid-content ">病历号</div></el-col>
-      <el-col  :span="3"><div ><el-input v-model="medicalrecordid" placeholder="请输入内容"></el-input></div></el-col>
-      <el-col :span="3"><div><el-button type="primary" icon="el-icon-search" @click="fetchPreMsg">搜索</el-button></div></el-col>
+      <el-col  :span="3"><div >
+        <el-autocomplete   popper-class="my-autocomplete" placeholder="输入病历号查找" v-model="medicalrecordid" :fetch-suggestions="querySearch"
+                           @select="fetchPreMsg" :disabled="canEdit">
+          <i  class="el-icon-edit el-input__icon"
+              slot="suffix">
+          </i>
+          <template slot-scope="{ item }">
+            <div class="name">{{ item.inde }}</div>
+          </template>
+        </el-autocomplete>
+
+      </div></el-col>
+      <el-col :span="3"><div><el-button type="primary" icon="el-icon-search" @click="etchPreMsg">搜索</el-button></div></el-col>
     </el-row>
     <el-row :gutter="20">
       <el-col :span="4"><div class="grid-content bg-purple text">患者信息确认</div></el-col>
@@ -59,7 +70,7 @@
         prop="num"
         label="数量">
       </el-table-column>
-      <el-table-column 
+      <el-table-column
       prop="proname"
       label="名称">
 
@@ -82,17 +93,20 @@
       <el-col :span="4" style="text-align:left"><el-button type="primary" @click="dis_medicine">发药</el-button></el-col>
     </el-row>
 
-    
+
 
   </div>
 </template>
 
 <script>
+  import {getrequiremsg} from '@/api/registration'
 import {distributemedicine,getpatientmsg,getPreMsg_medicine} from "@/api/registration"
   export default {
 
     data() {
       return {
+        canEdit:false,
+        baseData:{},
         medicalrecordid:"",
         registSelection: [],
         fee:"",
@@ -111,8 +125,27 @@ import {distributemedicine,getpatientmsg,getPreMsg_medicine} from "@/api/registr
       }
     },
     methods: {
+      fetchPreMsg(item){
+        item = item.inde;
+        this.medicalrecordid = item;
+        getpatientmsg(this.medicalrecordid).then(response=>{
+          this.patientdetail = response.data;
+          console.log("成功获取病人信息")
+        }).catch(error=>{
+          console.log("病人信息获取失败")
+        });
+        getPreMsg_medicine(this.medicalrecordid).then(response=>{
+          this.prescriptionmsg  = response.data;
+          for(var a in this.prescriptionmsg){
+            this.prescriptionmsg[a].name=this.patientdetail.name;
+          }
+          console.log("成功获取病人处方信息")
+        }).catch(error=>{
+          console.log("病人处方信息获取失败")
+        })
+      },
       //获取病人信息
-      fetchPreMsg(){
+      etchPreMsg(){
         getpatientmsg(this.medicalrecordid).then(response=>{
           this.patientdetail = response.data;
           console.log("成功获取病人信息")
@@ -135,13 +168,13 @@ import {distributemedicine,getpatientmsg,getPreMsg_medicine} from "@/api/registr
               this.message.error("医生信息有误，请重新登录")
               return
             }
-            
+
             for(var a in this.registSelection){
               var registid = this.registSelection[a].registid;
 
               // alert(registid+"   "+medicalrecordid+"   "+docid+"   "+this.form.paytype+"   "+this.form.invoiceid);
               distributemedicine(registid,docid,this.form,this.registSelection[a]).then(response=>{
-                
+
                 console.log("结算完毕")
               }).catch(error=>{
                 this.$message.error("发药处理错误")
@@ -177,8 +210,32 @@ import {distributemedicine,getpatientmsg,getPreMsg_medicine} from "@/api/registr
           this.settlementVisible=true;
         }
       }
+      ,
+      querySearch(queryString,cb){
+        var medicalNums = this.baseData.medicalNum;
+        var results = queryString? medicalNums.filter(
+          (str)=>{
+            return (str.inde.toString().indexOf(queryString))===0;
+          }
+        ):medicalNums;
+        //调用callback返回建议列表数据
+        results.forEach(e=>{
+          e.inde = e.inde.toString()
+        })
+        cb(results);
+      },
     },
-  
+    mounted() {
+      getrequiremsg().then(response=>{
+        var data = response.data;
+        this.baseData.gender = data.gender;
+        this.baseData.regType = data.regType;
+        this.baseData.depMsg = data.depMsg;
+        this.baseData.medicalNum=data.medicalNum;
+        this.baseData.chargeType=data.chargeType;
+      })
+    }
+
 
 
   };
@@ -189,7 +246,7 @@ import {distributemedicine,getpatientmsg,getPreMsg_medicine} from "@/api/registr
   margin-top: 10px;
 }
 .bg-purple {
-    background: #aee6de;
+    background: #34e6ce;
 }
 .bg-purple-light {
     background: #e5e9f2;

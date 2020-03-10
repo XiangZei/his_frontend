@@ -3,11 +3,15 @@ import Router from 'vue-router'
 
 
 Vue.use(Router)
-
 export default new Router({
   routes: [
+    // {
+    //   path: '/',component: ()=>import('@/views/login/index'), hidden:true
+    // },
     {
-      path: '/',component: ()=>import('@/views/login/index'), hidden:true
+      path: '/',
+      component: () => import('@/views/login/index'),
+      hidden: true
     },
     {path:'/404',component:()=>import("@/views/404")},
     {
@@ -16,6 +20,7 @@ export default new Router({
       name: 'admain',
       meta:{requireAuth:true},
       component: () => import('@/views/index'),
+      // component: Layout,
       children:[
         {
           path:'regis',
