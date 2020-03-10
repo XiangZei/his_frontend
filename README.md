@@ -18,4 +18,30 @@ npm run build
 npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## 登录界面
+
+![登录界面](images\登录界面.png)
+
+## 挂号界面
+
+![挂号界面](images\挂号界面.png)
+
+## 退号界面
+
+![退号界面](images\退号界面.png)
+
+## 缴费界面
+
+![缴费界面](images\缴费界面.png)
+
+## 看诊界面
+
+![看诊界面](images\看诊界面.png)
+
+## 开药界面
+
+![开药界面](images\开药界面.png)
+
+## 发药界面
+
+![发药界面](images\发药界面.png)
